@@ -1,0 +1,24 @@
+@(problemList: List[Int])
+
+@main{
+    @problemList.map { p =>
+        <div class="EulerProblemContainer">
+            <div>
+                <button type="button" class="EulerProblem Unsolved" id="problem_@p" data-id="@p"># @p</button>
+            </div>
+            <div class="EulerProblemSolution">
+                <div class="EulerProblemProgress">
+                    <span class="Progress" id="progress_@p">&nbsp;</span>
+                </div>
+                <div class="EulerProblemAnswer">
+                    <span class="Answer" id="answer_@p">&nbsp;</span>
+                </div>
+                <div class="EulerProblemLink">
+                    <a href="https://projecteuler.net/problem=@p" target="_blank">
+                        <img src="@routes.Assets.versioned("images/external.png")"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+}
