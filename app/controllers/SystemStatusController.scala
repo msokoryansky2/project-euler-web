@@ -22,20 +22,26 @@ class SystemStatusController @Inject()(cc: ControllerComponents)
 
   val logger = play.api.Logger(getClass)
 
-  case class SystemStatus(memoryFree: Long, memoryMax: Long)
+  case class SystemStatus(memoryUsed: Long, memoryFree: Long, memoryMax: Long)
 
   object WsMessage {
     def toJson(msg: String) =
       Json.obj("result" -> "ok", "message" -> msg)
 
     def toJson(status: SystemStatus) =
-      Json.obj("result" -> "ok", "memoryFree" -> status.memoryFree.toString, "memoryMax" -> status.memoryMax.toString)
+      Json.obj(
+        "result" -> "ok",
+        "memoryUsed" -> status.memoryUsed.toString,
+        "memoryFree" -> status.memoryFree.toString,
+        "memoryMax" -> status.memoryMax.toString
+      )
 
     def errorJson(error: String) =
       Json.obj("result" -> "error", "message" -> error)
   }
 
-  implicit val transformer = MessageFlowTransformer.jsonMessageFlowTransformer[JsObject, JsObject]
+  implicit val transformer: MessageFlowTransformer[JsObject, JsObject] =
+    MessageFlowTransformer.jsonMessageFlowTransformer[JsObject, JsObject]
 
   /**
     * Creates a websocket.  `acceptOrResult` is preferable here because it returns a
@@ -68,7 +74,11 @@ class SystemStatusController @Inject()(cc: ControllerComponents)
   protected def systemStatusSnapshot: SystemStatus = {
     val mb = 1024 * 1024
     val r = Runtime.getRuntime
-    SystemStatus((r.maxMemory - r.totalMemory + r.freeMemory) / mb, r.maxMemory / mb)
+    SystemStatus(
+      (r.totalMemory - r.freeMemory) / mb,
+      (r.maxMemory - r.totalMemory + r.freeMemory) / mb,
+      r.maxMemory / mb
+    )
   }
   private def systemStatus(rh: RequestHeader) =
     Source.tick(0.5.second, 0.5.second, NotUsed).map(_ => WsMessage.toJson(systemStatusSnapshot))
