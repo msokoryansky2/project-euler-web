@@ -4,12 +4,9 @@ import java.net.URL
 import javax.inject._
 
 import akka.NotUsed
-import akka.actor._
 import akka.stream.scaladsl._
-import play.api.libs.json._
 import play.api.mvc._
 import play.api.mvc.Results._
-
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -20,10 +17,6 @@ class SystemStatusController @Inject()(cc: ControllerComponents)(implicit ec: Ex
   val logger = play.api.Logger(getClass)
 
   private type WSMessage = String
-
-  def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.websocket_test("ws://localhost:9000/system_status/ws"))
-  }
 
   /**
     * Creates a websocket.  `acceptOrResult` is preferable here because it returns a
