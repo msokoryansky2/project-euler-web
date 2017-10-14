@@ -32,8 +32,8 @@ class SystemStatusController @Inject()(cc: ControllerComponents)(implicit ec: Ex
     * @return a fully realized websocket.
     */
   def ws: WebSocket = WebSocket.acceptOrResult[WSMessage, WSMessage] {
-    case rh if sameOriginCheck(rh) => {
-      logger.error(s"Request $rh accepted")
+    case rh if sameOriginCheck(rh) =>
+      logger.info(s"Request $rh accepted")
       val out = systemStatus(rh)
         /*
                   .recover {
@@ -45,7 +45,6 @@ class SystemStatusController @Inject()(cc: ControllerComponents)(implicit ec: Ex
                     */
       // Send out period system status updates
       Future(Right(Flow.fromSinkAndSource(Sink.ignore, out)))
-    }
 
     case rejected =>
       logger.error(s"Request $rejected failed same origin check")
@@ -62,8 +61,8 @@ class SystemStatusController @Inject()(cc: ControllerComponents)(implicit ec: Ex
     val r = Runtime.getRuntime
     (r.maxMemory - r.totalMemory + r.freeMemory) / mb
   }
-  private def systemStatus(rh: RequestHeader): Source[WSMessage, Cancellable] =
-    Source.tick(0.5.second, 0.5.second, systemStatusSnapshot.toString)
+  private def systemStatus(rh: RequestHeader) =
+    Source.tick(0.5.second, 0.5.second, NotUsed).map(_ => systemStatusSnapshot.toString)
 
   /**
     * Checks that the WebSocket comes from the same origin.  This is necessary to protect
@@ -83,7 +82,7 @@ class SystemStatusController @Inject()(cc: ControllerComponents)(implicit ec: Ex
         true
 
       case Some(badOrigin) =>
-        logger.error(s"originCheck: rejecting request because Origin header value ${badOrigin} is not in the same origin")
+        logger.error(s"originCheck: rejecting request because Origin header value $badOrigin is not in the same origin")
         false
 
       case None =>
