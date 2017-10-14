@@ -21,6 +21,10 @@ class SystemStatusController @Inject()(cc: ControllerComponents)(implicit ec: Ex
 
   private type WSMessage = String
 
+  def index() = Action { implicit request: Request[AnyContent] =>
+    Ok(views.html.websocket_test("ws://localhost:9000/system_status/ws"))
+  }
+
   /**
     * Creates a websocket.  `acceptOrResult` is preferable here because it returns a
     * Future[Flow], which is required internally.

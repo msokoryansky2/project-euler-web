@@ -1,9 +1,10 @@
+@(wsUri: String)
+
 <!DOCTYPE html>
 <meta charset="utf-8" />
 <title>WebSocket Test</title>
 <script language="javascript" type="text/javascript">
-
-  var wsUri = "ws://echo.websocket.org/";
+  var wsUri = "@wsUri";
   var output;
 
   function init()
