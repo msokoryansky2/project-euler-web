@@ -35,16 +35,13 @@ class SystemStatusController @Inject()(cc: ControllerComponents)(implicit ec: Ex
     case rh if sameOriginCheck(rh) =>
       logger.info(s"Request $rh accepted")
       val out = systemStatus(rh)
-        /*
-                  .recover {
-                      case e: Exception =>
-                        logger.error("Cannot create websocket", e)
-                        val result = InternalServerError("Cannot create websocket")
-                        Left(result)
-                    }
-                    */
-      // Send out period system status updates
       Future(Right(Flow.fromSinkAndSource(Sink.ignore, out)))
+        .recover {
+          case e: Exception =>
+            logger.error("Cannot create websocket", e)
+            val result = InternalServerError("Cannot create websocket")
+            Left(result)
+        }
 
     case rejected =>
       logger.error(s"Request $rejected failed same origin check")
