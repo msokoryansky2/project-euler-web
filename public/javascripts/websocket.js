@@ -28,7 +28,7 @@ $(document).ready(function(e) {
     }
 
     function onMessage(evt) {
-        updateStatus(evt.data + ' MB');
+        updateStatus(evt.data);
     }
 
     function onError(evt) {
@@ -41,7 +41,7 @@ $(document).ready(function(e) {
     }
 
     function updateStatus(message) {
-        //console.log(message);
+        console.log(message);
         $("#SystemStatusFreeMem").html(message)
     }
 })
