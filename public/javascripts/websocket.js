@@ -1,6 +1,6 @@
 $(document).ready(function(e) {
 
-    var websocket = openWebsocket();
+    websocket = openWebsocket();
 
     function getWsUri() {
         var loc = window.location;
@@ -40,9 +40,9 @@ $(document).ready(function(e) {
         websocket.send(message);
     }
 
-    function updateStatus(message) {
-        console.log(message);
-        $("#SystemStatusFreeMem").html(message)
+    function updateStatus(data) {
+        console.log(data);
+        if (!!data.memoryFree && !!data.memoryMax) updateMemoryGauge(data.memoryFree, data.memoryMax);
     }
 })
 
