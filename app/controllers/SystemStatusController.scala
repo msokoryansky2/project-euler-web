@@ -26,18 +26,18 @@ class SystemStatusController @Inject()(cc: ControllerComponents)
 
   object WsMessage {
     def toJson(msg: String) =
-      Json.obj("result" -> "ok", "message" -> msg)
+      Json.obj("type" -> "message", "message" -> msg)
 
     def toJson(status: SystemStatus) =
       Json.obj(
-        "result" -> "ok",
+        "type" -> "system_status",
         "memoryUsed" -> status.memoryUsed.toString,
         "memoryFree" -> status.memoryFree.toString,
         "memoryMax" -> status.memoryMax.toString
       )
 
     def errorJson(error: String) =
-      Json.obj("result" -> "error", "message" -> error)
+      Json.obj("type" -> "error", "message" -> error)
   }
 
   implicit val transformer: MessageFlowTransformer[JsObject, JsObject] =
@@ -81,7 +81,7 @@ class SystemStatusController @Inject()(cc: ControllerComponents)
     )
   }
   private def systemStatus(rh: RequestHeader) =
-    Source.tick(0.5.second, 0.5.second, NotUsed).map(_ => WsMessage.toJson(systemStatusSnapshot))
+    Source.tick(1.second, 1.second, NotUsed).map(_ => WsMessage.toJson(systemStatusSnapshot))
 
   /**
     * Checks that the WebSocket comes from the same origin.  This is necessary to protect

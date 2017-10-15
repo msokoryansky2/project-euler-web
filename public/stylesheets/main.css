@@ -1,3 +1,47 @@
+.Header {
+    height: 100px;
+}
+
+.Content {
+    top: 100px;
+}
+
+div#SystemStatus {
+    width: 720px;
+}
+
+div#MemoryGauge {
+    float: left;
+    margin-right: 10px;
+    margin-left: 10px;
+    height: 150px;
+    width: 480px;
+}
+
+div#MemoryGaugeTitle {
+    width: 100%;
+    margin-top: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    font-size: 12px;
+}
+
+div#Message {
+    float: right;
+    margin-right: 10px;
+    margin-left: 10px;
+    height: 150px;
+    width: 230px;
+    color: black;
+    text-align: left;
+    font-weight: 100;
+    font-size: 14px;
+}
+
+div.Error {
+    color: #F44336;
+}
+
 div.EulerProblemContainer {
     float: left;
     margin: 5px 10px;

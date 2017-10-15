@@ -20,19 +20,34 @@ $(document).ready(function(e) {
     }
 
     function onOpen(evt) {
-        updateStatus("Websocket opened");
+        updateMessage("Websocket opened");
     }
 
     function onClose(evt) {
-        updateStatus("Websocket closed");
+        updateMessage("Websocket closed");
     }
 
     function onMessage(evt) {
-        updateStatus(evt.data);
+        //console.log(evt.data);
+        var data = JSON.parse(evt.data);
+        if (!!data && !!data.type) switch(data.type) {
+            case "system_status":
+                updateSystemStatus(data);
+                break;
+            case "message":
+                updateMessage(data);
+                break;
+             case "error":
+                updateError(data);
+                break;
+             default:
+                console.log("Unknown message type: " + data.type)
+                break;
+        }
     }
 
     function onError(evt) {
-        updateStatus("Error: " + evt.data);
+        updateError(evt.data);
         websocket.close();
     }
 
@@ -40,9 +55,16 @@ $(document).ready(function(e) {
         websocket.send(message);
     }
 
-    function updateStatus(data) {
-        console.log(data);
-        if (!!data.memoryFree && !!data.memoryMax) updateMemoryGauge(data.memoryFree, data.memoryMax);
+    function updateMessage(data) {
+        if (!!data && !!data.message) $("#Message").removeClass("Error").html(data.message);
+    }
+
+    function updateError(data) {
+        if (!!data && !!data.message) $("#Message").addClass("Error").html(data.message);
+    }
+
+    function updateSystemStatus(data) {
+        if (!!data && !!data.memoryFree && !!data.memoryMax) memoryGaugeUpdate(data.memoryFree, data.memoryMax);
     }
 })
 
