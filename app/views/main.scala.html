@@ -1,4 +1,4 @@
-@(content: Html)
+@(right_content: Html)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -7,9 +7,14 @@
     </head>
     <body>
       @header()
-
-      @content
-
+      <div class="content">
+          <div class="left">
+              @left()
+          </div>
+          <div class="right">
+              @right_content
+          </div>
+      </div>
       @footer()
     </body>
 </html>
