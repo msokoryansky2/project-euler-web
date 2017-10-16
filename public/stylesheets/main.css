@@ -4,12 +4,12 @@
 }
 
 .left {
-    width: 210px;
+    width: 240px;
     position: fixed;
 }
 
 .right {
-    padding-left: 210px;
+    padding-left: 240px;
     /* the next props are meant to keep this block independent from the other floated one */
     width: auto;
     overflow: hidden;
@@ -102,7 +102,7 @@ button.euler-problem {
     border-radius: 4px;
     text-align: center;
     font-size: 18px;
-    height: 40px;
+    height: 60px;
     width: 210px;
 }
 

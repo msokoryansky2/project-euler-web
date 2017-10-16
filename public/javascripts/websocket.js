@@ -56,11 +56,11 @@ $(document).ready(function(e) {
     }
 
     function updateMessage(data) {
-        if (!!data && !!data.message) $("#Message").removeClass("Error").html(data.message);
+        if (!!data && !!data.message) $("#message").removeClass("error").html(data.message);
     }
 
     function updateError(data) {
-        if (!!data && !!data.message) $("#Message").addClass("Error").html(data.message);
+        if (!!data && !!data.message) $("#message").addClass("error").html(data.message);
     }
 
     function updateSystemStatus(data) {
