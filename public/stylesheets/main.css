@@ -22,27 +22,35 @@ div#system-status {
 div#memory-gauge-title {
     width: 100%;
     height: 20px;
-    margin-top: 10px;
+    margin-top: 5px;
     font-family: Arial, Helvetica, sans-serif;
     color: black;
     text-align: center;
     font-weight: 100;
-    font-size: 14px;
+    font-size: 12px;
 }
 
-div#message {
-    width: 100%
-    height: 20px;
+div.messages {
+    width: 100%;
+    height: 100%;
     margin-top: 20px;
-    font-family: Arial, Helvetica, sans-serif;
+    margin-left: 10px;
+    font-family: monospace, monaco, lucida console, courier new, courier;
     color: black;
     text-align: left;
     font-weight: 100;
-    font-size: 14px;
+    font-size: 9px;
+    line-height: 10px;
+}
+
+div.message {
+    text-indent: -20px;
+    margin-left: 20px;
 }
 
 div.error {
     color: #F44336;
+    font-weight: 400;
 }
 
 div.euler-problem-container {

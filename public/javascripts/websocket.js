@@ -12,6 +12,7 @@ $(document).ready(function(e) {
 
     function openWebsocket() {
         websocket = new WebSocket(getWsUri());
+        updateMessage("Websocket created");
         websocket.onopen = function(evt) { onOpen(evt) };
         websocket.onclose = function(evt) { onClose(evt) };
         websocket.onmessage = function(evt) { onMessage(evt) };
@@ -24,7 +25,7 @@ $(document).ready(function(e) {
     }
 
     function onClose(evt) {
-        updateMessage("Websocket closed");
+        updateError("Websocket closed");
     }
 
     function onMessage(evt) {
@@ -35,13 +36,15 @@ $(document).ready(function(e) {
                 updateSystemStatus(data);
                 break;
             case "message":
-                updateMessage(data);
+                var message = (!!data.message) ? data.message : data;
+                updateMessage(message);
                 break;
              case "error":
-                updateError(data);
+                var message = (!!data.message) ? data.message : data;
+                updateError("Error: " + message);
                 break;
              default:
-                console.log("Unknown message type: " + data.type)
+                updateError("Unknown message type: " + data.type);
                 break;
         }
     }
@@ -53,14 +56,6 @@ $(document).ready(function(e) {
 
     function doSend(message) {
         websocket.send(message);
-    }
-
-    function updateMessage(data) {
-        if (!!data && !!data.message) $("#message").removeClass("error").html(data.message);
-    }
-
-    function updateError(data) {
-        if (!!data && !!data.message) $("#message").addClass("error").html(data.message);
     }
 
     function updateSystemStatus(data) {

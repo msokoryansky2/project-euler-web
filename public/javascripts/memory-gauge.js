@@ -2,7 +2,7 @@
 
 $(document).ready(function(e) {
     $('.memory-gauge').kumaGauge({
-        value: 100,
+        value: 0,
         radius: 80,
         gaugeWidth: 10,
         showNeedle: false,
