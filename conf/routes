@@ -11,3 +11,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 # Map project_euler
 GET     /project_euler/*num         controllers.ProjectEulerController.index(num: Int)
+
+# Map system monitor
+GET     /system_monitor             controllers.SystemStatusController.ws
+

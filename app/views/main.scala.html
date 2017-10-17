@@ -1,17 +1,20 @@
-@(content: Html)
+@(right_content: Html)
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Project Euler</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.ico")">
+        <title>Mike's Project Euler</title>
         @includes()
     </head>
     <body>
       @header()
-
-      @content
-
+      <div class="content">
+          <div class="left">
+              @left()
+          </div>
+          <div class="right">
+              @right_content
+          </div>
+      </div>
       @footer()
     </body>
 </html>

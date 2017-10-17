@@ -1,17 +1,17 @@
 $(document).ready(function(e) {
-    $("button.EulerProblem").click(function() {
+    $("button.euler-problem").click(function() {
         // If this solution is in progress then ignore
-        if ($(this).hasClass("InProgress")) return;
+        if ($(this).hasClass("in-progress")) return;
         var id = $(this).attr('data-id');
         clearAnswer(id);
-        $("button#problem_" + id).removeClass("Unsolved Solved").addClass("InProgress");
+        $("button#problem_" + id).removeClass("unsolved solved").addClass("in-progress");
         $.getJSON("project_euler/" + id, problemSolved).fail(function() { problemError(id) });
         wait(id, 0);
     })
 })
 
 function clearAnswer(id) {
-    $("button#problem_" + id).removeClass("InProgress Solved").addClass("Unsolved");
+    $("button#problem_" + id).removeClass("in-progress solved").addClass("unsolved");
     $("span#progress_" + id).text("");
     $("span#answer_" + id).text("");
 
@@ -34,11 +34,11 @@ function problemSolved(data) {
         var id = data[i][0];
         var answer = data[i][1];
         $("span#answer_" + id).text(answer);
-        $("button#problem_" + id).removeClass("InProgress Unsolved").addClass("Solved");
+        $("button#problem_" + id).removeClass("in-progress unsolved").addClass("solved");
     }
 }
 
 function problemError(id) {
     $("span#answer_" + id).text("Error :(");
-    $("button#problem_" + id).removeClass("InProgress Solved").addClass("Unsolved");
+    $("button#problem_" + id).removeClass("in-progress solved").addClass("unsolved");
 }
