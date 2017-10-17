@@ -33,6 +33,7 @@ $(document).ready(function(e) {
         var data = JSON.parse(evt.data);
         if (!!data && !!data.type) switch(data.type) {
             case "system_status":
+                updateTrace("JVM used memory: " +  data.memoryUsed + "MB");
                 updateSystemStatus(data);
                 break;
             case "message":
@@ -40,17 +41,17 @@ $(document).ready(function(e) {
                 updateMessage(message);
                 break;
              case "error":
-                var message = (!!data.message) ? data.message : data;
-                updateError("Error: " + message);
+                var message = (!!data.message) ? data.message : JSON.stringify(data);
+                updateError("Application error: " + message);
                 break;
              default:
-                updateError("Unknown message type: " + data.type);
+                updateError("Unknown message type " + data.type + " in message " + JSON.stringify(data));
                 break;
         }
     }
 
     function onError(evt) {
-        updateError(evt.data);
+        updateError("Websocket error event: " + JSON.stringify(evt));
         websocket.close();
     }
 

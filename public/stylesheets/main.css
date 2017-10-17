@@ -32,21 +32,27 @@ div#memory-gauge-title {
 
 div.messages {
     width: 100%;
-    height: 100%;
+    height: 300px;
+    overflow-y: auto;
     margin-top: 20px;
     margin-left: 10px;
-    font-family: monospace, monaco, lucida console, courier new, courier;
+    font-family: "Lucida Console", Monaco, monospace, "Courier New", Courier;
     color: black;
     text-align: left;
     font-weight: 100;
-    font-size: 9px;
-    line-height: 10px;
+    font-size: 10px;
+    line-height: 11px;
 }
 
 div.message {
     text-indent: -20px;
     margin-left: 20px;
 }
+
+div.trace {
+    color: #DCDCDC;
+}
+
 
 div.error {
     color: #F44336;
