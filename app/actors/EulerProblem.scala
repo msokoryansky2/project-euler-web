@@ -3,16 +3,18 @@ package actors
 import javax.inject._
 
 import play.api.Configuration
-import akka.actor.{Actor, ActorRef, Props}
+import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.routing.{ActorRefRoutee, RoundRobinRoutingLogic, Router}
 import services.EulerProblemService
 
-import scala.concurrent.Future
+import scala.concurrent.{Future, TimeoutException}
+import scala.concurrent.duration._
 import scala.util.{Failure, Success}
+import akka.pattern.after
 
 sealed trait MsgEuler
 case class MsgSolutionRequestToMaster(problemNumber: Integer) extends MsgEuler
-case class MsgSolutionRequestToWorker(problemNumber: Integer, asker: ActorRef) extends MsgEuler
+case class MsgSolutionRequestToWorker(problemNumber: Integer, asker: ActorRef, maxWait: Long) extends MsgEuler
 case class MsgSolutionResultToMaster(problemNumber: Integer, result: String, asker: ActorRef) extends MsgEuler
 case class MsgSolutionResultToAsker(problemNumber: Integer, result: String) extends MsgEuler
 
@@ -31,10 +33,12 @@ class EulerProblemMaster @Inject() (configuration: Configuration) extends Actor 
     Router(RoundRobinRoutingLogic(), routees)
   }
 
+  val maxWait: Long = configuration.getOptional[String]("project_euler.problem_max_wait_seconds").getOrElse("30").toLong
+
   def receive: Receive = {
     case MsgSolutionRequestToMaster(problemNumber) =>
       logger.info(s"Master $self received request for problem # $problemNumber")
-      workerRouter.route(MsgSolutionRequestToWorker(problemNumber, sender), self)
+      workerRouter.route(MsgSolutionRequestToWorker(problemNumber, sender, maxWait), self)
     case MsgSolutionResultToMaster(problemNumber, result, asker) =>
       logger.info(s"Master $self received result $result for problem # $problemNumber")
       asker ! MsgSolutionResultToAsker(problemNumber, result)
@@ -48,13 +52,19 @@ class EulerProblemWorker extends Actor {
   logger.info(s"CreatingEuler problem worker $self")
 
   def receive: Receive = {
-    case MsgSolutionRequestToWorker(problemNumber, asker) =>
+    case MsgSolutionRequestToWorker(problemNumber, asker, maxWait) =>
       val thisSender = sender
       logger.info(s"Worker $self received request for problem # $problemNumber")
       val futureResult: Future[String] = EulerProblemService.answer(problemNumber)
-      futureResult.onComplete {
-        case Success(result) => thisSender ! MsgSolutionResultToMaster(problemNumber, result, asker)
-        case Failure(e) => thisSender ! MsgSolutionResultToMaster(problemNumber, "We failed :(", asker)
+      val timer = after(maxWait.second, context.system.scheduler)(Future.failed(new TimeoutException()))
+      Future.firstCompletedOf(Seq(futureResult, timer)).onComplete {
+        case Success(result) =>
+          thisSender ! MsgSolutionResultToMaster(problemNumber, result, asker)
+        case Failure(e: TimeoutException) =>
+          thisSender ! MsgSolutionResultToMaster(problemNumber, s"$maxWait sec passed :(", asker)
+        case Failure(_) =>
+          thisSender ! MsgSolutionResultToMaster(problemNumber, "Some other error :(", asker)
       }
+
   }
 }
