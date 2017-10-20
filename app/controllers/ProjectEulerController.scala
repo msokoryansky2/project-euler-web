@@ -7,7 +7,6 @@ import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.util.Timeout
 import play.api.libs.json.Json
 import play.api.mvc._
-import services.EulerProblemService
 
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Promise
@@ -27,13 +26,14 @@ class ProjectEulerController @Inject()(system: ActorSystem,
 
   def index(num: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
 
-    logger.info(s"Got a request for $num")
+    logger.info(s"Web request for solution to Euler problem $num")
 
     implicit val timeout: Timeout = Timeout(100.second)
     val p = Promise[String]
     val resultListener = system.actorOf(Props(new Actor {
       def receive: Receive = {
         case MsgSolutionResultToAsker(problemNumber, result) =>
+          logger.info(s"Received result $result for Euler problem $num")
           p.success(result)
           context.stop(self)
       }
@@ -45,11 +45,8 @@ class ProjectEulerController @Inject()(system: ActorSystem,
   /*
    * Old actor-less implementation
    *
-
     def index(num: Int) = Action.async { implicit request: Request[AnyContent] =>
       EulerProblemService.answer(num).map(result => Ok(Json.toJson(Map(num -> result))))
     }
-
-   *
    */
 }
