@@ -61,7 +61,7 @@ class EulerProblemWorker extends Actor {
         case Success(result) =>
           thisSender ! MsgSolutionResultToMaster(problemNumber, result, asker)
         case Failure(e: TimeoutException) =>
-          thisSender ! MsgSolutionResultToMaster(problemNumber, s"$maxWait sec passed :(", asker)
+          thisSender ! MsgSolutionResultToMaster(problemNumber, s"Taking too long :(", asker)
         case Failure(_) =>
           thisSender ! MsgSolutionResultToMaster(problemNumber, "Some other error :(", asker)
       }
