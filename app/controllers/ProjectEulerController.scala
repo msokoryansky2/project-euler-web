@@ -2,7 +2,7 @@ package controllers
 
 import javax.inject._
 
-import actors.{MsgSolutionRequestToMaster, MsgSolutionResultToMaster}
+import actors.{MsgSolutionRequestToMaster, MsgSolutionResultToAsker}
 import akka.actor.{Actor, ActorRef, ActorSystem, Props}
 import akka.util.Timeout
 import play.api.libs.json.Json
@@ -21,19 +21,24 @@ import scala.concurrent.duration._
   */
 @Singleton
 class ProjectEulerController @Inject()(system: ActorSystem,
-                                       @Named("euler-problem-master-actor") eulerProbleMaster: ActorRef,
+                                       @Named("euler-problem-master-actor") eulerProblemMaster: ActorRef,
                                        cc: ControllerComponents) extends AbstractController(cc) {
+  val logger = play.api.Logger(getClass)
+
   def index(num: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
+
+    logger.info(s"Got a request for $num")
+
     implicit val timeout: Timeout = Timeout(100.second)
     val p = Promise[String]
     val resultListener = system.actorOf(Props(new Actor {
       def receive: Receive = {
-        case MsgSolutionResultToMaster(problemNumber, result, asker) =>
+        case MsgSolutionResultToAsker(problemNumber, result) =>
           p.success(result)
           context.stop(self)
       }
     }))
-    eulerProbleMaster.tell(msg = MsgSolutionRequestToMaster(num), sender = resultListener)
+    eulerProblemMaster.tell(msg = MsgSolutionRequestToMaster(num), sender = resultListener)
     p.future.map(result => Ok(Json.toJson(Map(num -> result))))
   }
 

@@ -41,8 +41,6 @@ class EulerProblemMaster @Inject() (configuration: Configuration) extends Actor 
   }
 }
 
-
-
 class EulerProblemWorker extends Actor {
   val logger = play.api.Logger(getClass)
 
@@ -51,7 +49,9 @@ class EulerProblemWorker extends Actor {
   def receive: Receive = {
     case MsgSolutionRequestToWorker(problemNumber, asker) =>
       logger.info(s"Worker received MsgSolutionRequestToWorker($problemNumber, $asker) from $sender")
-      sender ! MsgSolutionResultToMaster(problemNumber, answer(problemNumber), asker)
+      val result: String = answer(problemNumber)
+      sender ! MsgSolutionResultToMaster(problemNumber, result, asker)
+      logger.info(s"Worker responded with MsgSolutionResultToMaster($problemNumber, $result, $asker) to $sender")
   }
 
   def answer(problemNumber: Integer): String = EulerProblem(problemNumber) match {
