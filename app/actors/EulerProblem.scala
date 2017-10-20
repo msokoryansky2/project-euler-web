@@ -21,7 +21,7 @@ class EulerProblemMaster @Inject() (configuration: Configuration) extends Actor 
   logger.info(s"CreatingEuler problem master $self")
 
   val workerRouter: Router = {
-    val numWorkers: Integer = configuration.getOptional[Integer]("project_euler.worker.num").getOrElse(2)
+    val numWorkers: Integer = 3 // configuration.getOptional[Integer]("project_euler.worker.num").getOrElse(2)
     logger.info(s"Creating $numWorkers Euler problem workers")
     val routees = Vector.fill(numWorkers) {
       val r = context.actorOf(Props[EulerProblemWorker])
@@ -41,11 +41,7 @@ class EulerProblemMaster @Inject() (configuration: Configuration) extends Actor 
   }
 }
 
-class EulerProblemMasterInjectorModule extends AbstractModule with AkkaGuiceSupport {
-  def configure(): Unit = {
-    bindActor[EulerProblemMaster]("euler-problem-master-actor")
-  }
-}
+
 
 class EulerProblemWorker extends Actor {
   val logger = play.api.Logger(getClass)
