@@ -24,3 +24,5 @@ libraryDependencies += "com.typesafe.akka" %% "akka-testkit" % "2.5.3" % Test
 libraryDependencies += "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.3" % Test
 // libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.0.0" % Test
 libraryDependencies += "org.awaitility" % "awaitility" % "3.0.0" % Test
+
+libraryDependencies += "com.typesafe.akka" % "akka-actor_2.12" % "2.5.4"
