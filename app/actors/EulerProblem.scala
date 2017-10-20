@@ -5,10 +5,8 @@ import javax.inject._
 import play.api.Configuration
 import akka.actor.{Actor, ActorRef, Props}
 import akka.routing.{ActorRefRoutee, RoundRobinRoutingLogic, Router}
-import play.api.libs.concurrent.AkkaGuiceSupport
 import services.EulerProblemService
 
-// import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
@@ -20,12 +18,11 @@ case class MsgSolutionResultToAsker(problemNumber: Integer, result: String) exte
 
 class EulerProblemMaster @Inject() (configuration: Configuration) extends Actor {
   val logger = play.api.Logger(getClass)
-
   logger.info(s"CreatingEuler problem master $self")
 
   val workerRouter: Router = {
-    val numWorkers: Integer = 3 // configuration.getOptional[Integer]("project_euler.worker.num").getOrElse(2)
-    logger.info(s"Creating $numWorkers Euler problem workers")
+    val numWorkers: Integer = configuration.getOptional[String]("project_euler.worker_num").getOrElse("2").toInt
+    logger.info(s"Creating router with $numWorkers Euler problem workers")
     val routees = Vector.fill(numWorkers) {
       val r = context.actorOf(Props[EulerProblemWorker])
       context watch r
