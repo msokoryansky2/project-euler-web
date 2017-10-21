@@ -34,11 +34,16 @@ function problemSolved(data) {
         var id = data[i][0];
         var answer = data[i][1];
         $("span#answer_" + id).text(answer);
-        $("button#problem_" + id).removeClass("in-progress unsolved").addClass("solved");
+        // The "solution" could be an error message
+        if (Number.isNaN(Number(answer))) {
+            $("button#problem_" + id).removeClass("in-progress solved").addClass("unsolved");
+        } else {
+            $("button#problem_" + id).removeClass("in-progress unsolved").addClass("solved");
+        }
     }
 }
 
 function problemError(id) {
-    $("span#answer_" + id).text("Error :(");
+    $("span#answer_" + id).text("HTTP Error :(");
     $("button#problem_" + id).removeClass("in-progress solved").addClass("unsolved");
 }

@@ -6,6 +6,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import mike.sokoryansky.EulerProblems.EulerProblem
 
 object EulerProblemService {
+  /**
+    * Old, actor-less way to get Euler problem solutions
+    */
   def answer(num: Int): Future[String] = Future {
     EulerProblem(num) match {
       case Some(ep) => ep.run
