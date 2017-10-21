@@ -25,10 +25,7 @@ class ProjectEulerController @Inject()(system: ActorSystem,
   val logger = play.api.Logger(getClass)
 
   def index(num: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
-
     logger.info(s"Web request for solution to Euler problem $num")
-
-    implicit val timeout: Timeout = Timeout(100.second)
     val p = Promise[String]
     val resultListener = system.actorOf(Props(new Actor {
       def receive: Receive = {
