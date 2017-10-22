@@ -1,5 +1,5 @@
 FROM openjdk:8u141-slim
-COPY C:/Users/mike/IdeaProjects/project-euler-web/target/universal/ /usr/
+COPY target/universal/ /usr/
 WORKDIR /usr/
 RUN unzip project-euler-web-1.0-SNAPSHOT
 RUN chmod +x /usr/project-euler-web-1.0-SNAPSHOT/bin
