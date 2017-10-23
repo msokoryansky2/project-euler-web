@@ -10,7 +10,7 @@ $(document).ready(function(e) {
         radius: 80,
         gaugeWidth: 10,
         showNeedle: false,
-        fill : '0-#FFFFFF:0-#008CBA:100',
+        fill : '0-#A9A9A9:0-#008CBA:100',
         paddingY: 10,
         paddingX: 40,
         valueLabel: {
