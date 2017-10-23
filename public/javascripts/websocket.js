@@ -1,3 +1,5 @@
+var websocket = false;
+
 $(document).ready(function(e) {
 
     websocket = openWebsocket();
@@ -25,7 +27,7 @@ $(document).ready(function(e) {
     }
 
     function onClose(evt) {
-        updateError("Websocket closed");
+        updateError("Lost backend connectivity. Backend likely down. Websocket closed.");
     }
 
     function onMessage(evt) {
@@ -61,6 +63,10 @@ $(document).ready(function(e) {
 
     function updateSystemStatus(data) {
         if (!!data && !!data.memoryFree && !!data.memoryMax) memoryGaugeUpdate(data.memoryFree, data.memoryMax);
+        systemStatusPing();
     }
 })
 
+function isWebsocketClosed() {
+   return (websocket.readyState === yourWsObject.CLOSED || websocket.readyState === yourWsObject.CLOSING);
+}
