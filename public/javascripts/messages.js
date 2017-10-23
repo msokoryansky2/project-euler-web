@@ -4,6 +4,7 @@ function updateMessage(message) {
 
 function updateError(message) {
     update(message, "message error");
+    $("#error").html(timestamp() + " " + message);
 }
 
 function updateTrace(message) {

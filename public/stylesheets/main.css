@@ -19,18 +19,37 @@ div#system-status {
     width: 100%;
 }
 
-div#memory-gauge-title {
+div.leftpad {
+    height: 30px;
+}
+
+div.gauge-title {
     width: 100%;
     height: 20px;
-    margin-top: 5px;
-    font-family: Arial, Helvetica, sans-serif;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    font-family: Helvetica, Arial, sans-serif;
     color: black;
     text-align: center;
     font-weight: 100;
     font-size: 12px;
 }
 
+div#error {
+    width: 100%;
+    overflow-y: auto;
+    margin-top: 20px;
+    margin-left: 10px;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #F44336;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 400;
+}
+
 div.messages {
+    visibility: hidden;
+
     width: 100%;
     height: 300px;
     overflow-y: auto;
