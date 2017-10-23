@@ -34,7 +34,7 @@ $(document).ready(function(e) {
 })
 
 function responsivenessGaugeUpdate() {
-    // We allow up to 1.2 seconds interval per ping before penalizing responsiveness.
+    // We allow up to 1.0 seconds interval per ping before penalizing responsiveness.
     // We also need to allow for the fact that there may be fewer than PING_HISTORY_LENGTH elements in array.
     // So the algo is:
     // -1. If websocket is done, set value as 0.
@@ -49,7 +49,7 @@ function responsivenessGaugeUpdate() {
     } else if (pingHistory.length <= 0) {
         pct = 100;
     } else {
-        var timeWindow = 1.2 * pingHistory.length;
+        var timeWindow = 1.0 * pingHistory.length;
         var timeWindowStart = getCurrentSeconds() - timeWindow;
         var timeWindowPings = pingHistory.filter(function(p){return p >= timeWindowStart}).length;
         pct =  Math.round(100 * timeWindowPings / pingHistory.length);

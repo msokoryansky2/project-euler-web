@@ -68,5 +68,5 @@ $(document).ready(function(e) {
 })
 
 function isWebsocketClosed() {
-   return (!websocket || websocket.readyState === yourWsObject.CLOSED || websocket.readyState === yourWsObject.CLOSING);
+   return (!websocket || websocket.readyState === websocket.CLOSED || websocket.readyState === websocket.CLOSING);
 }
