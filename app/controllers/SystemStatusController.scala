@@ -112,11 +112,13 @@ class SystemStatusController @Inject()(cc: ControllerComponents)
 
   /**
     * Returns true if the value of the Origin header contains an acceptable value.
+    * For demo purposes we allow localhost Origin on any Origin hosted on amazonaws.com.
+    * This is obviously not mission-critical level security but enough for a auth-less demo site.
     */
   private def originMatches(origin: String): Boolean = {
     try {
       val url = new URL(origin)
-      url.getHost == "localhost" &&
+      (url.getHost == "localhost" || url.getHost.endsWith(".amazonaws.com")) &&
         (url.getPort match { case 9000 | 19001 => true; case _ => false })
     } catch {
       case e: Exception => false
