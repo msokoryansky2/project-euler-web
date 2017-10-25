@@ -6,7 +6,7 @@ $(document).ready(function(e) {
         radius: 80,
         gaugeWidth: 10,
         showNeedle: false,
-        paddingY: 10,
+        paddingY: 15,
         paddingX: 40,
         valueLabel: {
             display: false,
@@ -15,7 +15,7 @@ $(document).ready(function(e) {
             display: true,
             left: '0%',
             right: '100%',
-            fontFamily: 'Helvetica',
+            fontFamily: 'Open Sans',
             fontColor: '#1E4147',
             fontSize: '10',
             fontWeight: 'normal',

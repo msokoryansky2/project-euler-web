@@ -10,8 +10,8 @@ $(document).ready(function(e) {
         radius: 80,
         gaugeWidth: 10,
         showNeedle: false,
-        fill : '0-#A9A9A9:0-#008CBA:100',
-        paddingY: 10,
+        fill: '0-#A9A9A9:0-#008CBA:100',
+        paddingY: 15,
         paddingX: 40,
         valueLabel: {
             display: false,
@@ -20,10 +20,10 @@ $(document).ready(function(e) {
             display: true,
             left: '0%',
             right: '100%',
-            fontFamily: 'Helvetica',
+            fontFamily: 'Open Sans',
             fontColor: '#1E4147',
             fontSize: '10',
-            fontWeight: 'normal',
+            fontWeight: '300',
         },
     });
 

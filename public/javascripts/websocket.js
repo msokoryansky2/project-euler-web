@@ -27,7 +27,7 @@ $(document).ready(function(e) {
     }
 
     function onClose(evt) {
-        updateError("Lost backend connectivity. Backend likely down. Websocket closed.");
+        updateError("Lost backend connectivity. Backend may be down and will be restarted. Websocket closed.");
     }
 
     function onMessage(evt) {

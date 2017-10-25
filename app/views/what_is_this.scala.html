@@ -1,64 +1,106 @@
 <div id="overlay">
-    <div class="overlay-text">
-        Welcome to my  <a href="https://projecteuler.net/" target="_blank">Project Euler</a> solutions web app!
-        Project Euler is hundreds of increasingly difficult mathematical problems to to be solved with computer programs.
+
+    <div style="margin-top: 20px"></div>
+
+    <div class="overlay-title">
+        WELCOME TO MY  <a href="https://projecteuler.net/" target="_blank">PROJECT EULER</a> WEB APP
     </div>
 
     <div class="overlay-text">
-        The source code to both my Project Euler solutions and this web app itself are on GitHub
-        <a href="https://github.com/msokoryansky2/ProjectEuler" target="_blank">here</a> and
-        <a href="https://github.com/msokoryansky2/project-euler-web" target="_blank">here</a>.
+        Project Euler is hundreds of increasingly difficult mathematical problems
+        intended to be solved with computer programs.
+        If you enjoy coding, algorithms, and math you should give it a try!
+    </div>
+
+
+    <div class="overlay-title">
+        WHAT ARE ALL THESE BUTTONS?
     </div>
 
     <div class="overlay-text">
-        This web app's backend is written in Scala using Play framework and Akka.
+        Each grey rectangular button corresponds to one Project Euler problem.
+        Click the button to have the backend start the solution process.
+        The button turns red and a timer below it starts counting seconds till the answer is received.
+        Once solved, the answer is displayed below the button and the button turns blue.
+    </div>
+
+    <div class="overlay-text">
+        You can also click on the Project Euler link below and to the right of the button
+        to see the actual problem being solved.
+    </div>
+
+
+
+    <div class="overlay-title">
+        WHAT'S WITH THE GAUGES?
+    </div>
+
+    <div class="overlay-text">
+        The two gauges on the left represent the state of this web app's backend as it is solving the problems.
+        They are updated continuously via a Websocket connection.
+    </div>
+
+    <div class="overlay-text">
+        The top gauge shows the Java Virtual Machine (JVM) memory utilization (relative to max available to the JVM).
+        The bottom gauge shows the general responsiveness of the backend -- it does its best to stay responsive even
+        as it's solving multiple problems simultaneously.
+    </div>
+
+    <div class="overlay-text">
+        You can verify that the gauges are backend-driven by opening this page in different browser windows
+        and clicking a few of the problem buttons.
+        You'll see gauges in both browsers move in sync as they receive the same status data from their common backend.
+    </div>
+
+
+
+    <div class="overlay-title">
+        WHAT'S THE TECHNOLOGY STACK FOR THIS WEB APP?
+    </div>
+
+    <div class="overlay-text">
+        This backend is in Scala using Play framework and Akka.
         The backend runs inside a Docker container on Amazon EC2 Container Service (ECS), part of Amazon AWS.
     </div>
 
     <div class="overlay-text">
-        The front-end is HTML with CSS and Javascript and jQuery. It uses Ajax to retrieve problem solutions and
+        The front-end is HTML with CSS and jQuery. It uses Ajax to get problem answers and
         Websockets to receive a continuous stream of system status updates from the backend.
     </div>
 
-    <div class="overlay-text">
-        Each of the numbered buttons you see on the right hand of the screen is linked to a corresponding Project Euler
-        problem. There is a link to the problem's Project Euler page below and to the right of the button.
+
+
+    <div class="overlay-title">
+        CAN I SEE THE SOURCE CODE?
     </div>
 
     <div class="overlay-text">
-        Clicking a button assigns one of the backend's Akka actors to solving that problem. The button turns
-        red while solution is in progress. A timer below and to the left of the button counts seconds until the answer
-        is received. When the solution is received the button turns blue and the answer is displayed below it.
+        The source code to my Project Euler solutions and this web app is on GitHub
+        <a href="https://github.com/msokoryansky2/ProjectEuler" target="_blank">here</a> and
+        <a href="https://github.com/msokoryansky2/project-euler-web" target="_blank">here</a> respectively.
+    </div>
+
+
+
+    <div class="overlay-title">
+        WHY ARE PROBLEMS TAKING SO LONG TO SOLVE?
     </div>
 
     <div class="overlay-text">
-        The two gauges on the left represent the continuously streamed state of the backend.
-        The streaming is done over a Websocket connection.
+        Project Euler is hard :)
     </div>
 
     <div class="overlay-text">
-        You can verify that the gauges are driven by the backend data by opening this page in two or more browser windows.
-        You'll see gauges in both browsers move in sync as they receive the same status data from the common backend.
+        Many of my Project Euler solutions are very memory- and CPU-intensive,
+        especially for the higher-numbered problems.
+        The backend runs on a single AWS "micro" instance with just one virtual CPU and 1GB of RAM.
     </div>
 
     <div class="overlay-text">
-        The top gauge shows the percent of all available memory that's being utilized inside the Java Virtual Machine
-        (JVM) within which the Scala backend runs.
-    </div>
-
-    <div class="overlay-text">
-        The bottom gauge shows the responsiveness of the backend.
-        The front end expects to receive status updates from the backend every second. That corresponds
-        to 100% responsiveness. If that expectation is not met because the backend is busy solving problems,
-        the responsiveness gauge will decline from the full 100%.
-    </div>
-
-    <div class="overlay-text">
-        Many of Project Euler problems are very memory- and CPU-intensive, especially the higher-numbered ones.
-        The backend runs on one AWS "micro" instance with a single virtual CPU and 1GB of RAM.
-        It is not hard to overwhelm the backend by simultaneously starting the solutions for many higher-numbered
-        problems by clicking on corresponding buttons. In those cases the backend will eventually run out of memory and
+        It is not hard to overwhelm the backend by rapidly clicking buttons for higher-numbered
+        problems. A couple problems may overwhelm the "micro" instance all by themselves.
+        In those cases the backend will eventually run out of memory and
         "crash" and its container will then be automatically restarted by ECS.
-        But there may be a lengthy period of unresponsiveness before that happens.
+        But there may be a lengthy period of unresponsiveness in between.
     </div>
 </div>
