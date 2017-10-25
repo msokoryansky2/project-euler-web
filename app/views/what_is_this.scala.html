@@ -1,0 +1,66 @@
+<div id="overlay">
+    <span>
+        Welcome to my Project Euler solution page.
+    </span>
+
+    <span>
+        <a href="https://projecteuler.net/">Project Euler</a> is hundreds of increasingly difficult
+        mathematical problems intended to be solved with computer programs.
+        I enjoy solving Project Euler in <a href="https://www.scala-lang.org/">Scala</a>.
+    </span>
+
+    <span>
+        This page is a web front-end to my solutions to many of Project Euler Problems.
+    </span>
+
+    <span>
+        This page's backend is in <a href="https://www.scala-lang.org/">Scala</a> using
+        <a href="https://www.playframework.com/">Play Framework</a> and <a href="https://akka.io/">Akka</a> actors.
+        It is deployed in a <a href="https://www.docker.com/">Docker</a> container
+        running on <a href="https://aws.amazon.com/ecs/">Amazon EC2 Container Service (ECS)</a> which
+        is part of <a href="https://aws.amazon.com/">Amazon AWS</a>.
+    </span>
+
+    <span>
+        This page itself is HTML with CSS and Javascript and jQuery. It uses Ajax to retrieve problem solutions and
+        Websockets to receive a continuous stream of system status updates from the backend.
+    </span>
+
+    <span>
+        Each of the numbered buttons you see on the right hand of the screen is linked to a corresponding Project Euler
+        problem. There is a link to the problem below and to the right of the button.
+        Clicking a button assigns one of the backend's Akka actors to solving that problem. The button turns
+        red while solution is in progress and a timer below and to the left of the button counts seconds till the answer
+        is received. When the solution is received the button turns blue and the answer is displayed below it.
+    </span>
+
+    <span>
+        The two gauges on the left represent the continuously updated state of the backend.
+    </span>
+
+    <span>
+        The top gauge shows the percent of all available memory that's being utilized
+        in the Java Virtual Machine (JVM) within which the Scala backend runs. This information is streamed from the
+        backend to the front-end via a Websocket connection.
+    </span>
+
+    <span>
+        The bottom gauge shows the responsiveness of the backend, even as it's solving many Project Euler problems
+        simultaneously. The front end expects to receive status updates from the backend every second. That corresponds
+        to 100% responsiveness. If that expectation is not met, the responsiveness gauge will decline from the full 100%.
+    </span>
+
+    <span>
+        Many of Project Euler problems are extremely memory- and CPU-intensive, especially the higher-numbered ones.
+        The backend runs on a single AWS "micro" instance with a single virtual CPU and just one gigabyte of RAM.
+        It is not hard to overwhelm the backend by simultaneously starting the solutions for many higher-numbered
+        problems by clicking on corresponding buttons. In those cases the backend will eventually run out of memory and
+        "crash" and its container will then be automatically restarted by ECS.
+        But there may be a lengthy period of unresponsiveness before that happens. Please click responsibly!
+    </span>
+
+    <span id="got-it">
+        <a href="#">OK, Got it!</a>&#128512;
+    </span>
+
+</div>
