@@ -23,14 +23,14 @@ div.leftpad {
     height: 30px;
 }
 
-div.what-is-this {
+div#what-is-this {
     width: 100%;
     height: 20px;
     margin-top: 20px;
     margin-bottom: 0px;
     font-family: Helvetica, Arial, sans-serif;
-    color: black;
     text-align: center;
+    color: black;
     font-size: 16px;
 }
 
@@ -175,7 +175,27 @@ div#overlay {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0,0,0,0.5);  /* Black background with opacity */
+    background-color: rgba(0,0,0,0.7);  /* Black background with opacity */
     z-index: 1000;                      /* Specify a stack order */
-    cursor: pointer;                    /* Add a pointer on hover */
+}
+
+div.overlay-text {
+    margin: 30px 30% 30px 30%;
+    font-family: Helvetica, Arial, sans-serif;
+    color: #D3D3D3;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 100;
+}
+
+div#overlay a:link {
+    color: #E7E7E7;
+}
+
+div#overlay a:visited {
+    color: #FFFFFF;
+}
+
+div#overlay a:hover {
+    color: #E7E7E7;
 }

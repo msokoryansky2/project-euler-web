@@ -3,7 +3,7 @@ $(document).ready(function(e) {
         $("#overlay").show();
     });
 
-    $("#got-it").click(function() {
+    $("#overlay").click(function() {
         $("#overlay").hide();
     });
 });
