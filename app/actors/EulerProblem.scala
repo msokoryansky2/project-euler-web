@@ -46,7 +46,12 @@ class EulerProblemMaster @Inject() (configuration: Configuration) extends Actor 
 }
 
 class EulerProblemWorker extends Actor {
-  import context.dispatcher
+  // EulerProblemWorker does the heavy lifting with solving PE problems, many of which will take a dozen seconds or more.
+  // Because of that we do not want to use the default dispatcher but instead use a separate thread pool dispatcher.
+  // This should improve responsiveness somewhat. To use the default dispatcher we would have done:
+  // import context.dispatcher
+  // But instead we use a dispatcher better suited for long lasting operations like PE solving:
+  implicit val blockingDispatcher = context.system.dispatchers.lookup("euler-blocking-dispatcher")
 
   val logger = play.api.Logger(getClass)
   logger.info(s"CreatingEuler problem worker $self")
