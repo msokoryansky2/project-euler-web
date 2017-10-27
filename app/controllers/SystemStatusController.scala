@@ -19,7 +19,6 @@ class SystemStatusController @Inject()(cc: ControllerComponents)
                                       (implicit
                                        ec: ExecutionContext)
 {
-
   val logger = play.api.Logger(getClass)
 
   case class SystemStatus(memoryUsed: Long, memoryFree: Long, memoryMax: Long)
