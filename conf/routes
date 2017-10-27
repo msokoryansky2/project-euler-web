@@ -15,3 +15,5 @@ GET     /project_euler/*num         controllers.ProjectEulerController.index(num
 # Map system monitor
 GET     /system_monitor             controllers.SystemStatusController.ws
 
+# Load-balancer health check ping
+GET     /ping                       controllers.PingController.index
