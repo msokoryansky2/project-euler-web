@@ -3,13 +3,12 @@ package controllers
 import javax.inject._
 
 import actors.{MsgSolutionRequestToMaster, MsgSolutionResultToAsker}
-import akka.actor.{Actor, ActorRef, ActorSystem, Props}
+import akka.actor.{ActorRef, ActorSystem}
 import akka.util.Timeout
 import play.api.libs.json.Json
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits._
-import scala.concurrent.{Future, Promise}
 import scala.concurrent.duration._
 import akka.pattern.ask
 import play.api.Configuration
@@ -30,21 +29,8 @@ class ProjectEulerController @Inject()(system: ActorSystem,
 
   def index(num: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     logger.info(s"Web request for solution to Euler problem $num")
-    val maxWait: Long = configuration.getOptional[String]("project_euler.problem_max_wait_seconds").getOrElse("30").toLong
+    val maxWait: Long = configuration.getOptional[String]("project_euler.problem_max_wait_seconds").getOrElse("120").toLong
     implicit val timeout: Timeout = maxWait.seconds
-    /*
-    val p = Promise[String]
-    val resultListener = system.actorOf(Props(new Actor {
-      def receive: Receive = {
-        case MsgSolutionResultToAsker(problemNumber, result) =>
-          logger.info(s"Received result $result for Euler problem $num")
-          p.success(result)
-          context.stop(self)
-      }
-    }))
-    eulerProblemMaster.tell(msg = MsgSolutionRequestToMaster(num), sender = resultListener)
-    p.future.map(result => Ok(Json.toJson(Map(num -> result))))
-    */
     (eulerProblemMaster ?  MsgSolutionRequestToMaster(num))
       .mapTo[MsgSolutionResultToAsker]
       .map(r => Ok(Json.toJson(Map(num -> r.result))))
