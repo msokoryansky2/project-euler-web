@@ -13,7 +13,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
  */
 @Singleton
 class HomeController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+  val logger = play.api.Logger(getClass)
+
   def index() = Action.async { implicit request: Request[AnyContent] =>
+    logger.info(s"Web request for home page")
     Future {
       EulerProblemService.availableProblems
     } map (problemList => Ok(views.html.index(problemList)))

@@ -17,9 +17,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class SystemStatusController @Inject()(cc: ControllerComponents)
                                       (implicit
-                                       ec: ExecutionContext)
-{
-
+                                       ec: ExecutionContext) {
   val logger = play.api.Logger(getClass)
 
   case class SystemStatus(memoryUsed: Long, memoryFree: Long, memoryMax: Long)
