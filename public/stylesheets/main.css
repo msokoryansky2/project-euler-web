@@ -4,12 +4,12 @@
 }
 
 .left {
-    width: 240px;
+    width: 360px;
     position: fixed;
 }
 
 .right {
-    padding-left: 240px;
+    padding-left: 360px;
     /* the next props are meant to keep this block independent from the other floated one */
     width: auto;
     overflow: hidden;
@@ -63,7 +63,7 @@ div#error {
 
 div#map {
     width: 100%;
-    height: 200px;
+    height: 180px;
     background-color: grey;
 }
 
