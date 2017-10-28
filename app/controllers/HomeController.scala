@@ -19,6 +19,6 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
     logger.info(s"Web request for home page")
     Future {
       EulerProblemService.availableProblems
-    } map (problemList => Ok(views.html.index(problemList)))
+    } map (problemList => Ok(views.html.main(views.html.right(problemList))))
   }
 }
