@@ -1,4 +1,7 @@
+const RECONNECT_INTERVAL_SEC = 15;
+
 var websocket = false;
+var reconnectTimer = false;
 
 $(document).ready(function(e) {
 
@@ -27,7 +30,8 @@ $(document).ready(function(e) {
     }
 
     function onClose(evt) {
-        updateError("Lost backend connectivity. Backend may be down and will be restarted. Websocket closed.");
+        updateError(websocketClosedMessage(RECONNECT_INTERVAL_SEC));
+        reconnect();
     }
 
     function onMessage(evt) {
@@ -64,6 +68,33 @@ $(document).ready(function(e) {
     function updateSystemStatus(data) {
         if (!!data && !!data.memoryFree && !!data.memoryMax) memoryGaugeUpdate(data.memoryFree, data.memoryMax);
         systemStatusPing();
+    }
+
+    /*
+     * Attempt to reconnect websocket after interval seconds with a countdown
+     */
+    function reconnect() {
+        if (!isWebsocketClosed()) return;
+        var secTillReconnect = RECONNECT_INTERVAL_SEC;
+        var reconnectTimer = setInterval(function() {
+            if (!isWebsocketClosed()) {
+                clearInterval(reconnectTimer);
+                clearError();
+                return;
+            }
+            updateError(websocketClosedMessage(secTillReconnect));
+            if (secTillReconnect-- <= 0) {
+                clearInterval(reconnectTimer);
+                clearError();
+                websocket = openWebsocket();
+                return;
+            }
+        }, 1000);
+
+    }
+
+    function websocketClosedMessage(secTillReconnect) {
+        return "Lost backend websocket connectivity. Will attempt to re-connect in " + secTillReconnect + " seconds";
     }
 })
 

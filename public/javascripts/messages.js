@@ -7,6 +7,10 @@ function updateError(message) {
     $("#error").html(timestamp() + " " + message);
 }
 
+function clearError() {
+    $("#error").html("");
+}
+
 function updateTrace(message) {
     update(message, "message trace");
 }

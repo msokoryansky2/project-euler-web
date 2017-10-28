@@ -120,7 +120,7 @@ div.euler-problem-progress {
     width: 30px;
     color: #808080;
     text-align: left;
-    font-weight: 100;
+    font-weight: 200;
     font-size: 10px;
 }
 
@@ -199,7 +199,7 @@ div.overlay-text {
     color: #D3D3D3;
     text-align: left;
     font-size: 20px;
-    font-weight: 100;
+    font-weight: 200;
 }
 
 div#overlay a:link {

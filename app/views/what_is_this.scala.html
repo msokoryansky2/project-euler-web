@@ -2,15 +2,17 @@
 
     <div style="margin-top: 20px"></div>
 
+
+
     <div class="overlay-title">
-        WELCOME TO MY  <a href="https://projecteuler.net/" target="_blank">PROJECT EULER</a> WEB APP
+        WELCOME TO MY PROJECT EULER WEB APP
     </div>
 
     <div class="overlay-text">
-        Project Euler is hundreds of increasingly difficult mathematical problems
-        intended to be solved with computer programs.
-        If you enjoy coding, algorithms, and math you should give it a try!
+        <a href="https://projecteuler.net/" target="_blank">Project Euler</a> is hundreds of increasingly difficult
+        mathematical problems intended to be solved with computer programs.
     </div>
+
 
 
     <div class="overlay-title">
@@ -18,21 +20,15 @@
     </div>
 
     <div class="overlay-text">
-        Each grey rectangular button corresponds to one Project Euler problem.
-        Click the button to have the backend start the solution process.
-        The button turns red and a timer below it starts counting seconds till the answer is received.
-        Once solved, the answer is displayed below the button and the button turns blue.
-    </div>
-
-    <div class="overlay-text">
-        You can also click on the Project Euler link below and to the right of the button
-        to see the actual problem being solved.
+        Each grey button corresponds to one Project Euler problem. The button turns red while the solution
+        is in progress and then blue once it's solved. The answer is displayed below the button. Below and to the right
+        of the button is a link to the problem description on Project Euler website.
     </div>
 
 
 
     <div class="overlay-title">
-        WHAT'S WITH THE GAUGES?
+        WHAT DO THE GAUGES MEAN?
     </div>
 
     <div class="overlay-text">
@@ -42,25 +38,29 @@
 
     <div class="overlay-text">
         The top gauge shows the Java Virtual Machine (JVM) memory utilization (relative to max available to the JVM).
-        The bottom gauge shows the general responsiveness of the backend -- it does its best to stay responsive even
-        as it's solving multiple problems simultaneously.
+        It should be close to 0% when there is plenty of free memory but can quickly approach 100% for more demanding
+        problems.
     </div>
 
     <div class="overlay-text">
-        You can verify that the gauges are backend-driven by opening this page in different browser windows
-        and clicking a few of the problem buttons.
+        The bottom gauge shows the general responsiveness of the backend. It will stay at 100% until the backend becomes
+        overloaded with problems, especially if those problems also push memory utilization close to 100%.
+    </div>
+
+    <div class="overlay-text">
+        Try opening this page in different browser windows and clicking a few of the problem buttons.
         You'll see gauges in both browsers move in sync as they receive the same status data from their common backend.
     </div>
 
 
 
     <div class="overlay-title">
-        WHAT'S THE TECHNOLOGY STACK FOR THIS WEB APP?
+        WHAT IS THE TECHNOLOGY STACK FOR THIS WEB APP?
     </div>
 
     <div class="overlay-text">
-        This backend is in Scala using Play framework and Akka.
-        The backend runs inside a Docker container on Amazon EC2 Container Service (ECS), part of Amazon AWS.
+        This backend is written in Scala using Play framework and Akka. It runs inside a Docker container
+        on a "micro" instance (1 virtual CPU and 1GB of RAM) on Amazon EC2 Container Service (ECS), part of Amazon AWS.
     </div>
 
     <div class="overlay-text">
@@ -71,11 +71,11 @@
 
 
     <div class="overlay-title">
-        CAN I SEE THE SOURCE CODE?
+        WHERE IS THE SOURCE CODE?
     </div>
 
     <div class="overlay-text">
-        The source code to my Project Euler solutions and this web app is on GitHub
+        The repos for my Project Euler solutions and for this web app are on GitHub
         <a href="https://github.com/msokoryansky2/ProjectEuler" target="_blank">here</a> and
         <a href="https://github.com/msokoryansky2/project-euler-web" target="_blank">here</a> respectively.
     </div>
@@ -83,24 +83,20 @@
 
 
     <div class="overlay-title">
-        WHY ARE PROBLEMS TAKING SO LONG TO SOLVE?
+        WHY IS IT SO SLOW?
     </div>
 
     <div class="overlay-text">
-        Project Euler is hard :)
+        Project Euler is hard :) Many of my Project Euler solutions are very memory- and CPU-intensive, especially for
+        the higher-numbered problems. The backend's hardware is outmatched by some of these problems.
     </div>
 
     <div class="overlay-text">
-        Many of my Project Euler solutions are very memory- and CPU-intensive,
-        especially for the higher-numbered problems.
-        The backend runs on a single AWS "micro" instance with just one virtual CPU and 1GB of RAM.
-    </div>
-
-    <div class="overlay-text">
-        It is not hard to overwhelm the backend by rapidly clicking buttons for higher-numbered
-        problems. A couple problems may overwhelm the "micro" instance all by themselves.
-        In those cases the backend will eventually run out of memory and
-        "crash" and its container will then be automatically restarted by ECS.
-        But there may be a lengthy period of unresponsiveness in between.
+        It turned out very hard to tune the backend to stay responsive as it's solving Project Euler problems that
+        each may use 100% of CPU capacity and nearly 100% of available memory. Currently all Akka actors that are
+        solving the problems on the backend run in a separate fork-join thread pool
+        (so under-utilized workers can "steal work" from over-utilized ones) with just one message processed per actor
+        before another actor gets a chance at execution. However "GC overhead limit exceeded" errors leading to eventual
+        backend crashes and auto-restart by the ECS are still possible, as are lengthy unresponsive periods.
     </div>
 </div>
