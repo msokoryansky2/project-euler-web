@@ -1,7 +1,7 @@
-@(problemList: List[Int] = List(1, 2, 3))
+@(problemList: List[Int])
 
-@for(p <- problemList) {
-    <div class="euler-problem-container">
+@problemList.map { p =>
+        <div class="euler-problem-container">
         <div>
             <button type="button" class="euler-problem unsolved" id="problem_@p" data-id="@p"># @p</button>
         </div>
