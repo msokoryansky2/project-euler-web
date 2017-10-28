@@ -1,3 +1,5 @@
+@(googleApiKey: String)
+
 <div id="system-status">
     <div id="what-is-this"><a href="#">What Is All This?</a>&#128533;</div>
     <div class="leftpad"></div>
@@ -8,6 +10,8 @@
     <div class="js-gauge responsiveness-gauge gauge"></div>
     <div class="leftpad"></div>
     <div id="error" class="error"></div>
+    <div class="leftpad"></div>
+    <div id="map" class="map" data-api-key="@googleApiKey"></div>
     <div class="leftpad"></div>
     <div id="messages" class="messages"></div>
 </div>
