@@ -49,13 +49,13 @@ function showMarker(geoData, markerOthers) {
     var marker = new google.maps.Marker({
         // Red marker for self, blue markers for others
         icon: (markerOthers ?
-                    "http://maps.google.com/mapfiles/ms/icons/blue-dot.png" :
-                    "http://maps.google.com/mapfiles/ms/icons/red-dot.png"),
+                    "http://maps.google.com/mapfiles/ms/icons/green-dot.png" :
+                    "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"),
         map: map,
         animation: google.maps.Animation.DROP,
         position: {lat: geoData.latitude, lng: geoData.longitude}
     });
-    map.setZoom(6);
+    map.setZoom(5);
     map.panTo(marker.position);
     // Save the marker in the marker array for future purposes and have a callback to remove it after a timeout
     if (markerOthers) {

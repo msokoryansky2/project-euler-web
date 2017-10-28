@@ -49,6 +49,18 @@ div.gauge-title {
     color: black;
 }
 
+div.map-title {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    font-family: 'Open Sans', sans-serif;
+    color: black;
+    text-align: center;
+    font-weight: 300;
+    font-size: 10px;
+    color: black;
+}
+
 div#error {
     width: 100%;
     overflow-y: auto;
