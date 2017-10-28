@@ -1,17 +1,17 @@
-@(right_content: Html)(googleApiKey: String)
+@(right_content: Html)(googleApiScriptUrl: String)
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <title>Mike's Project Euler</title>
-        @includes()
+        @includes(googleApiScriptUrl)
     </head>
     <body>
       @header()
       @what_is_this()
       <div class="content">
           <div class="left">
-              @left(googleApiKey)
+              @left()
           </div>
           <div class="right">
               @right_content
