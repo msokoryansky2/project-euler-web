@@ -1,9 +1,10 @@
 package controllers
 
+import actors.Solution
+
 import javax.inject._
 
-import actors.{MsgSolutionRequestToMaster, MsgSolutionResultToAsker}
-import akka.actor.Status.Success
+import actors.MsgSolutionRequestToMaster
 import akka.actor.{ActorRef, ActorSystem}
 import akka.util.Timeout
 import play.api.libs.json.Json
@@ -16,7 +17,6 @@ import play.api.Configuration
 import services.EulerProblemService
 
 import scala.concurrent.{Future, TimeoutException}
-import scala.util.Failure
 
 
 /**
@@ -34,21 +34,21 @@ class ProjectEulerController @Inject()(system: ActorSystem,
 
   def index(num: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     logger.info(s"Web request for # $num")
-    val maxWait: Long = configuration.getOptional[String]("project_euler.problem_max_wait_seconds").getOrElse("60").toLong
-    implicit val timeout: Timeout = maxWait.seconds
-    (eulerProblemMaster ?  MsgSolutionRequestToMaster(num))
+
+    // The call to eulerProblemMaster should complete quickly since we aren't going to get the solution
+    // if this problem hasn't already been solved. We'll get an "In Progress..." message instead.
+    implicit val timeout: Timeout = 10.seconds
+    (eulerProblemMaster ? MsgSolutionRequestToMaster(num))
       .recoverWith{
-        case to: TimeoutException => {
+        case to: TimeoutException =>
           logger.info(s"Timeout for # $num")
-          Future(MsgSolutionResultToAsker(num, "Timed Out :("))
-        }
-        case _ => {
+          Future(Solution.error(num, Solution.ERROR_TIMEOUT))
+        case _ =>
           logger.info(s"Unknown error for # $num")
-          Future(MsgSolutionResultToAsker(num, "Unknown Error :("))
-        }
+          Future(Solution.error(num, Solution.ERROR_OTHER))
       }
-      .mapTo[MsgSolutionResultToAsker]
-      .map(r => Ok(Json.toJson(Map(num -> r.result))))
+      .mapTo[Solution]
+      .map(sol => Ok(Json.toJson(Map(num -> sol))))
   }
 
   /*
