@@ -4,10 +4,8 @@ import java.net.URL
 import javax.inject._
 
 import actors.ClientHandler
-import akka.actor.ActorRef
-import akka.stream.OverflowStrategy
-import akka.stream.scaladsl._
-import messages.{WebsocketMessageOut, WsMsgOurError}
+import akka.actor.{ActorRef, ActorSystem}
+import akka.stream.Materializer
 import play.api.libs.json._
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.Results._
@@ -17,10 +15,8 @@ import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WebsocketController @Inject()(cc: ControllerComponents,
-                                    @Named("euler-problem-master-actor") eulerProblemMaster: ActorRef,
-                                    @Named("client-broadcaster-actor") clientBroadcaster: ActorRef)
-                                   (implicit ec: ExecutionContext) {
+class WebsocketController @Inject()(cc: ControllerComponents)
+                                   (implicit ec: ExecutionContext, system: ActorSystem, mat: Materializer) {
   val logger = play.api.Logger(getClass)
 
   implicit val transformer: MessageFlowTransformer[JsObject, JsObject] =
@@ -31,34 +27,14 @@ class WebsocketController @Inject()(cc: ControllerComponents,
     *
     * @return a fully realized websocket.
     */
-
-  def ws: WebSocket = WebSocket.accept[String, String] { request =>
-    ActorFlow.actorRef { out => ClientHandler.props(out) }
+  def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>
+    Future.successful({
+      if (sameOriginCheck) Right(ActorFlow.actorRef { out => ClientHandler.props(out) })
+      else Left(Forbidden)
+    })
   }
 
-
-  def ws: WebSocket = WebSocket.acceptOrResult[JsObject, JsObject] {
-    case rh if sameOriginCheck(rh) =>
-      logger.info(s"Request $rh accepted")
-      val outStatus = Source.queue[WebsocketMessageOut](Int.MaxValue, OverflowStrategy.backpressure)
-      Future(Right(Flow.fromSinkAndSource(Sink.ignore, outSystemStatus)))
-        .recover {
-          case e: Exception =>
-            logger.error("Websocket error", e)
-            // deregister from broadcaster
-            // clientBroadcaster !
-            val result = InternalServerError(WsMsgOurError("Websocket error"))
-            Left(result)
-        }
-
-    case rejected =>
-      logger.error(s"Request $rejected failed same origin check")
-      Future.successful {
-        Left(Forbidden(WsMsgOurError("Forbidden")))
-      }
-  }
-
-  /**
+  /**(
     * Checks that the WebSocket comes from the same origin.  This is necessary to protect
     * against Cross-Site WebSocket Hijacking as WebSocket does not implement Same Origin Policy.
     *
