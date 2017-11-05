@@ -5,7 +5,6 @@ import javax.inject._
 import play.api.Configuration
 import akka.actor.{Actor, ActorRef, Props}
 import akka.routing.{ActorRefRoutee, RoundRobinRoutingLogic, Router}
-import akka.stream.scaladsl.Source
 import messages._
 import play.api.libs.json.{JsObject, Json}
 
@@ -30,7 +29,7 @@ class Solution(val problemNumber: Integer,
       "answer" -> answer
   )
 
-  def toWsMsg: WebsocketMessage = WsMsgSolution(this)
+  def toWsMsg: WebsocketMessageOut = WsMsgOutSolution(this)
 }
 
 object Solution {

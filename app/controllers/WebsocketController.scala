@@ -3,10 +3,13 @@ package controllers
 import java.net.URL
 import javax.inject._
 
+import actors.ClientHandler
 import akka.actor.ActorRef
+import akka.stream.OverflowStrategy
 import akka.stream.scaladsl._
-import messages.WsMsgError
+import messages.{WebsocketMessageOut, WsMsgOurError}
 import play.api.libs.json._
+import play.api.libs.streams.ActorFlow
 import play.api.mvc.Results._
 import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc._
@@ -24,29 +27,34 @@ class WebsocketController @Inject()(cc: ControllerComponents,
     MessageFlowTransformer.jsonMessageFlowTransformer[JsObject, JsObject]
 
   /**
-    * Creates a websocket.  `acceptOrResult` is preferable here because it returns a
-    * Future[Flow], which is required internally.
+    * Creates a websocket if origin check passes.
     *
     * @return a fully realized websocket.
     */
+
+  def ws: WebSocket = WebSocket.accept[String, String] { request =>
+    ActorFlow.actorRef { out => ClientHandler.props(out) }
+  }
+
+
   def ws: WebSocket = WebSocket.acceptOrResult[JsObject, JsObject] {
     case rh if sameOriginCheck(rh) =>
       logger.info(s"Request $rh accepted")
-      val outSystemStatus = systemStatus(rh)
+      val outStatus = Source.queue[WebsocketMessageOut](Int.MaxValue, OverflowStrategy.backpressure)
       Future(Right(Flow.fromSinkAndSource(Sink.ignore, outSystemStatus)))
         .recover {
           case e: Exception =>
             logger.error("Websocket error", e)
             // deregister from broadcaster
             // clientBroadcaster !
-            val result = InternalServerError(WsMsgError("Websocket error"))
+            val result = InternalServerError(WsMsgOurError("Websocket error"))
             Left(result)
         }
 
     case rejected =>
       logger.error(s"Request $rejected failed same origin check")
       Future.successful {
-        Left(Forbidden(WsMsgError("Forbidden")))
+        Left(Forbidden(WsMsgOurError("Forbidden")))
       }
   }
 

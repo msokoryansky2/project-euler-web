@@ -2,8 +2,7 @@ package actors
 
 import javax.inject.Inject
 
-import akka.actor.Actor
-import akka.stream.scaladsl.SourceQueue
+import akka.actor.{Actor, ActorRef}
 import messages._
 import play.api.Configuration
 import services.{SystemStatus, SystemStatusService}
@@ -11,8 +10,7 @@ import services.{SystemStatus, SystemStatusService}
 import scala.concurrent.duration._
 
 class ClientBroadcaster  @Inject() (configuration: Configuration) extends Actor {
-  var queues: scala.collection.mutable.Set[SourceQueue[WebsocketMessage]] =
-    scala.collection.mutable.Set()
+  var clients: scala.collection.mutable.Set[ActorRef] = scala.collection.mutable.Set()
 
   val statusFreqSeconds: Long =
     configuration.getOptional[String]("project_euler.status_update_freq_sec").getOrElse("1").toLong
@@ -23,13 +21,13 @@ class ClientBroadcaster  @Inject() (configuration: Configuration) extends Actor 
   }
 
   def receive: Receive = {
-    case MsgRegisterWebsocketQueue(queue: SourceQueue[WebsocketMessage]) =>
-      if (!queues.contains(queue)) queues += queue
-    case MsgDeregisterWebsocketQueue(queue: SourceQueue[WebsocketMessage]) =>
-      if (queues.contains(queue)) queues -= queue
+    case MsgRegisterClient(client: ActorRef) =>
+      if (!clients.contains(client)) clients += client
+    case MsgDeregisterClient(client: ActorRef) =>
+      if (clients.contains(client)) clients -= client
     case MsgBroadcastSolution(solution: Solution) =>
-      queues.map(_ offer solution.toWsMsg)
+      clients.foreach(_ ! solution.toWsMsg)
     case MsgBroadcastStatus(status: SystemStatus) =>
-      queues.map(_ offer status.toWsMsg)
+      clients.foreach(_ ! status.toWsMsg)
   }
 }
