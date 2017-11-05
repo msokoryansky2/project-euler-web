@@ -3,15 +3,13 @@ package actors
 import javax.inject._
 
 import play.api.Configuration
-import akka.actor.{Actor, Props}
-import akka.dispatch.MessageDispatcher
+import akka.actor.{Actor, ActorRef, Props}
 import akka.routing.{ActorRefRoutee, RoundRobinRoutingLogic, Router}
-import services.EulerProblemService
+import akka.stream.scaladsl.Source
+import messages._
+import play.api.libs.json.{JsObject, Json}
 
-sealed trait MsgEuler
-case class MsgSolutionRequestToMaster(problemNumber: Integer) extends MsgEuler
-case class MsgSolutionRequestToWorker(problemNumber: Integer) extends MsgEuler
-case class MsgSolutionResultToMaster(problemNumber: Integer, answer: String) extends MsgEuler
+import scala.util.Try
 
 class Solution(val problemNumber: Integer,
                val answer: String,
@@ -21,10 +19,18 @@ class Solution(val problemNumber: Integer,
     new Solution(problemNumber, freshAnswer, startedAt, System.currentTimeMillis() / 1000)
 
   def isSolved: Boolean =
-    answer.isEmpty && answer != Solution.IN_PROGRESS && finishedAt > 0
+    !answer.isEmpty && Try(answer.toLong).isSuccess && finishedAt > 0
 
   def isStale(maxAgeSeconds: Long): Boolean =
     !isSolved && (System.currentTimeMillis() / 1000 - startedAt) > maxAgeSeconds
+
+  def toJson: JsObject = Json.obj(
+      "type" -> "solution",
+      "problem_number" -> problemNumber.toString,
+      "answer" -> answer
+  )
+
+  def toWsMsg: WebsocketMessage = WsMsgSolution(this)
 }
 
 object Solution {
@@ -37,7 +43,8 @@ object Solution {
     new Solution(problemNumber, error,  System.currentTimeMillis() / 1000, 0)
 }
 
-class EulerProblemMaster @Inject() (configuration: Configuration) extends Actor {
+class EulerProblemMaster @Inject() (configuration: Configuration,
+                                    @Named("client-broadcaster-actor") clientBroadcaster: ActorRef) extends Actor {
   val logger = play.api.Logger(getClass)
   logger.info(s"CreatingEuler problem master $self")
 
@@ -59,38 +66,25 @@ class EulerProblemMaster @Inject() (configuration: Configuration) extends Actor 
   }
 
   def receive: Receive = {
-    case MsgSolutionRequestToMaster(problemNumber) =>
+    case MsgAllSolutions() =>
+      // Return set of all known solutions
+      sender ! solutions.filter(s => s._2.isSolved).values
+    case MsgSolve(problemNumber) =>
       logger.info(s"Master $self received request for # $problemNumber")
       // Check if the problems hasn't been solved yet or is stale and if so, start a new solution
       if (!solutions.isDefinedAt(problemNumber) || solutions(problemNumber).isStale(maxAgeSeconds)) {
         solutions(problemNumber) = Solution.start(problemNumber)
-        workerRouter.route(MsgSolutionRequestToWorker(problemNumber), self)
+        workerRouter.route(MsgSolve(problemNumber), self)
       }
       // Send either actual answer (if happens to be available) or the canned "In progress..." answer to the asker
       sender ! solutions(problemNumber)
-    case MsgSolutionResultToMaster(problemNumber, answer) =>
+    case MsgSolution(problemNumber, answer) =>
       // We ignore any solutions that we are not aware of -- should never really happen
       if (solutions.isDefinedAt(problemNumber)) {
         logger.info(s"Master $self received answer *** $answer *** for # $problemNumber")
         solutions(problemNumber) = solutions(problemNumber).complete(answer)
+        // Broadcast solution to all clients
+        clientBroadcaster ! MsgBroadcastSolution(solutions(problemNumber))
       }
-  }
-}
-
-class EulerProblemWorker extends Actor {
-  // EulerProblemWorker does the heavy lifting with solving PE problems, many of which will take a dozen seconds or more.
-  // Because of that we do not want to use the default dispatcher but instead use a separate thread pool dispatcher.
-  // This should improve responsiveness somewhat.
-  //
-  // To use the default dispatcher we would have done: import context.dispatcher
-  implicit val blockingDispatcher: MessageDispatcher = context.system.dispatchers.lookup("euler-blocking-context")
-
-  val logger = play.api.Logger(getClass)
-  logger.info(s"CreatingEuler problem worker $self")
-
-  def receive: Receive = {
-    case MsgSolutionRequestToWorker(problemNumber) =>
-      logger.info(s"Worker $self received request for problem # $problemNumber")
-      sender ! MsgSolutionResultToMaster(problemNumber, EulerProblemService.answer(problemNumber))
   }
 }

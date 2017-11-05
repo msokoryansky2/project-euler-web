@@ -3,40 +3,22 @@ package controllers
 import java.net.URL
 import javax.inject._
 
-import akka.NotUsed
+import akka.actor.ActorRef
 import akka.stream.scaladsl._
+import messages.WsMsgError
 import play.api.libs.json._
 import play.api.mvc.Results._
 import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc._
 
-import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
-
 @Singleton
-class SystemStatusController @Inject()(cc: ControllerComponents)
-                                      (implicit
-                                       ec: ExecutionContext) {
+class WebsocketController @Inject()(cc: ControllerComponents,
+                                    @Named("euler-problem-master-actor") eulerProblemMaster: ActorRef,
+                                    @Named("client-broadcaster-actor") clientBroadcaster: ActorRef)
+                                   (implicit ec: ExecutionContext) {
   val logger = play.api.Logger(getClass)
-
-  case class SystemStatus(memoryUsed: Long, memoryFree: Long, memoryMax: Long)
-
-  object WsMessage {
-    def toJson(msg: String) =
-      Json.obj("type" -> "message", "message" -> msg)
-
-    def toJson(status: SystemStatus) =
-      Json.obj(
-        "type" -> "system_status",
-        "memoryUsed" -> status.memoryUsed.toString,
-        "memoryFree" -> status.memoryFree.toString,
-        "memoryMax" -> status.memoryMax.toString
-      )
-
-    def errorJson(error: String) =
-      Json.obj("type" -> "error", "message" -> error)
-  }
 
   implicit val transformer: MessageFlowTransformer[JsObject, JsObject] =
     MessageFlowTransformer.jsonMessageFlowTransformer[JsObject, JsObject]
@@ -50,36 +32,23 @@ class SystemStatusController @Inject()(cc: ControllerComponents)
   def ws: WebSocket = WebSocket.acceptOrResult[JsObject, JsObject] {
     case rh if sameOriginCheck(rh) =>
       logger.info(s"Request $rh accepted")
-      val out = systemStatus(rh)
-      Future(Right(Flow.fromSinkAndSource(Sink.ignore, out)))
+      val outSystemStatus = systemStatus(rh)
+      Future(Right(Flow.fromSinkAndSource(Sink.ignore, outSystemStatus)))
         .recover {
           case e: Exception =>
-            logger.error("Cannot create websocket", e)
-            val result = InternalServerError(WsMessage.errorJson("Cannot create websocket"))
+            logger.error("Websocket error", e)
+            // deregister from broadcaster
+            // clientBroadcaster !
+            val result = InternalServerError(WsMsgError("Websocket error"))
             Left(result)
         }
 
     case rejected =>
       logger.error(s"Request $rejected failed same origin check")
       Future.successful {
-        Left(Forbidden(WsMessage.errorJson("Forbidden")))
+        Left(Forbidden(WsMsgError("Forbidden")))
       }
   }
-
-  /**
-    * @return (Used memory, Free memory, Total memory, Free memory)
-    */
-  protected def systemStatusSnapshot: SystemStatus = {
-    val mb = 1024 * 1024
-    val r = Runtime.getRuntime
-    SystemStatus(
-      (r.totalMemory - r.freeMemory) / mb,
-      (r.maxMemory - r.totalMemory + r.freeMemory) / mb,
-      r.maxMemory / mb
-    )
-  }
-  private def systemStatus(rh: RequestHeader) =
-    Source.tick(1.second, 1.second, NotUsed).map(_ => WsMessage.toJson(systemStatusSnapshot))
 
   /**
     * Checks that the WebSocket comes from the same origin.  This is necessary to protect
