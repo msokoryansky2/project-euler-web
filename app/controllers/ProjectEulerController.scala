@@ -1,17 +1,16 @@
 package controllers
 
-import actors.Solution
 import javax.inject._
 
 import akka.actor.{ActorRef, ActorSystem}
 import akka.util.Timeout
-import play.api.libs.json.Json
 import play.api.mvc._
 
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.duration._
 import akka.pattern.ask
-import messages.MsgSolve
+import messages.{MsgSolve, WsMsgOutSolution}
+import models.{Solution, UserInfo}
 import play.api.Configuration
 import services.EulerProblemService
 
@@ -37,17 +36,17 @@ class ProjectEulerController @Inject()(system: ActorSystem,
     // The call to eulerProblemMaster should complete quickly since we aren't going to get the solution
     // if this problem hasn't already been solved. We'll get an "In Progress..." message instead.
     implicit val timeout: Timeout = 10.seconds
-    (eulerProblemMaster ? MsgSolve(num))
+    (eulerProblemMaster ? MsgSolve(num, UserInfo(request)))
       .recoverWith{
         case to: TimeoutException =>
           logger.info(s"Timeout for # $num")
-          Future(Solution.error(num, Solution.ERROR_TIMEOUT))
+          Future(Solution.error(num, UserInfo(request), Solution.ERROR_TIMEOUT))
         case _ =>
           logger.info(s"Unknown error for # $num")
-          Future(Solution.error(num, Solution.ERROR_OTHER))
+          Future(Solution.error(num, UserInfo(request), Solution.ERROR_OTHER))
       }
       .mapTo[Solution]
-      .map(sol => Ok(Json.toJson(Map(num -> sol))))
+      .map(sol => Ok(WsMsgOutSolution(sol).toJson))
   }
 
   /*

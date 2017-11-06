@@ -4,7 +4,7 @@ import java.net.URL
 import javax.inject._
 
 import actors.ClientHandler
-import akka.actor.{ActorRef, ActorSystem}
+import akka.actor.ActorSystem
 import akka.stream.Materializer
 import play.api.libs.json._
 import play.api.libs.streams.ActorFlow

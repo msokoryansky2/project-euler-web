@@ -1,6 +1,6 @@
 package actors
 
-import messages.{MsgSolve, MsgSolution}
+import messages.{MsgSolution, MsgSolveWorker}
 import akka.actor.Actor
 import akka.dispatch.MessageDispatcher
 import services.EulerProblemService
@@ -18,7 +18,7 @@ class EulerProblemWorker extends Actor {
   logger.info(s"CreatingEuler problem worker $self")
 
   def receive: Receive = {
-    case MsgSolve(problemNumber) =>
+    case MsgSolveWorker(problemNumber) =>
       logger.info(s"Worker $self received request for problem # $problemNumber")
       sender ! MsgSolution(problemNumber, EulerProblemService.answer(problemNumber))
   }

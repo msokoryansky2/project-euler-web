@@ -1,4 +1,4 @@
-package services
+package models
 
 import messages.{WebsocketMessageOut, WsMsgOutStatus}
 import play.api.libs.json.{JsObject, Json}
@@ -12,7 +12,7 @@ sealed case class SystemStatus(memoryUsed: Long, memoryFree: Long, memoryMax: Lo
   def toWsMsg: WebsocketMessageOut = WsMsgOutStatus(this)
 }
 
-object SystemStatusService {
+object SystemStatus {
   def status: SystemStatus = {
     val mb = 1024 * 1024
     val r = Runtime.getRuntime

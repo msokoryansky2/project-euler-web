@@ -1,8 +1,7 @@
 package messages
 
-import actors.Solution
+import models.{Solution, SystemStatus}
 import play.api.libs.json.{JsObject, Json}
-import services.SystemStatus
 
 sealed abstract class WebsocketMessageOut {
   def msgType: String

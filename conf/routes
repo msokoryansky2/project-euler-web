@@ -13,7 +13,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /project_euler/*num         controllers.ProjectEulerController.index(num: Int)
 
 # Map system monitor
-GET     /websocket                  controllers..ws
+GET     /websocket                  controllers.ws
 
 # Load-balancer health check ping
 GET     /ping                       controllers.PingController.index

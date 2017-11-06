@@ -4,8 +4,8 @@ import javax.inject.Inject
 
 import akka.actor.{Actor, ActorRef}
 import messages._
+import models.{Solution, SystemStatus}
 import play.api.Configuration
-import services.{SystemStatus, SystemStatusService}
 
 import scala.concurrent.duration._
 
@@ -17,14 +17,14 @@ class ClientBroadcaster  @Inject() (configuration: Configuration) extends Actor 
 
   // Instantiate a system status service that sends system statuses to this actor for re-broadcast to all clients
   context.system.scheduler.schedule(statusFreqSeconds seconds, statusFreqSeconds seconds) {
-    self ! SystemStatusService.status.toWsMsg
+    self ! SystemStatus.status.toWsMsg
   }
 
   def receive: Receive = {
     case MsgRegisterClient(client: ActorRef) =>
-      if (!clients.contains(client)) clients += client
+      clients += client
     case MsgDeregisterClient(client: ActorRef) =>
-      if (clients.contains(client)) clients -= client
+      clients -= client
     case MsgBroadcastSolution(solution: Solution) =>
       clients.foreach(_ ! solution.toWsMsg)
     case MsgBroadcastStatus(status: SystemStatus) =>
