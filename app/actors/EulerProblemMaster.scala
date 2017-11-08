@@ -5,7 +5,7 @@ import javax.inject._
 import play.api.Configuration
 import akka.actor.{Actor, ActorRef, Props}
 import akka.routing.{ActorRefRoutee, RoundRobinRoutingLogic, Router}
-import messages._
+import msg._
 import models.Solution
 
 class EulerProblemMaster @Inject() (configuration: Configuration,
@@ -34,6 +34,7 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
 
   def receive: Receive = {
     case MsgAllSolutions() =>
+      logger.info(s"Master $self received request for all available solutions")
       // Return set of all known solutions
       sender ! solutions.filter(s => s._2.isSolved).values
     case MsgSolve(problemNumber, by) =>
@@ -41,14 +42,14 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
       // Check if the problems hasn't been solved yet or is stale and if so, start a new solution
       if (!solutions.isDefinedAt(problemNumber) || solutions(problemNumber).isStale(maxAgeSeconds)) {
         solutions(problemNumber) = Solution.start(problemNumber, by)
-        workerRouter.route(MsgSolve(problemNumber, by), self)
+        workerRouter.route(MsgSolveWorker(problemNumber), self)
       }
       // Send either actual answer (if happens to be available) or the canned "In progress..." answer to the asker
       sender ! solutions(problemNumber)
     case MsgSolution(problemNumber, answer) =>
+      logger.info(s"Master $self received answer *** $answer *** for # $problemNumber")
       // We ignore any solutions that we are not aware of -- should never really happen
       if (solutions.isDefinedAt(problemNumber)) {
-        logger.info(s"Master $self received answer *** $answer *** for # $problemNumber")
         solutions(problemNumber) = solutions(problemNumber).complete(answer)
         // Broadcast solution to all clients
         clientBroadcaster ! MsgBroadcastSolution(solutions(problemNumber))

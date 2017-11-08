@@ -10,6 +10,6 @@ class UserInfoController @Inject()(cc: ControllerComponents) extends AbstractCon
   def userInfo(name: String, city: String, country: String) = Action { implicit request: Request[AnyContent] =>
     logger.info(s"Web request for user info update")
     val userInfo = UserInfo(request).withName(name).withCity(city).withCountry(country)
-    Ok().withSession(userInfo.toMap.toSeq: _*)
+    Ok("ok").withSession(userInfo.toMap.toSeq: _*)
   }
 }

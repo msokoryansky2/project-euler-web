@@ -1,6 +1,6 @@
 package actors
 
-import messages.{MsgSolution, MsgSolveWorker}
+import msg.{MsgSolution, MsgSolveWorker}
 import akka.actor.Actor
 import akka.dispatch.MessageDispatcher
 import services.EulerProblemService

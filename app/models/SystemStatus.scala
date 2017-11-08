@@ -1,6 +1,6 @@
 package models
 
-import messages.{WebsocketMessageOut, WsMsgOutStatus}
+import msg.{WebsocketMsgOut, WsMsgOutStatus}
 import play.api.libs.json.{JsObject, Json}
 
 sealed case class SystemStatus(memoryUsed: Long, memoryFree: Long, memoryMax: Long) {
@@ -9,7 +9,7 @@ sealed case class SystemStatus(memoryUsed: Long, memoryFree: Long, memoryMax: Lo
     "memoryFree" -> memoryFree.toString,
     "memoryMax" -> memoryMax.toString)
 
-  def toWsMsg: WebsocketMessageOut = WsMsgOutStatus(this)
+  def toWsMsg: WebsocketMsgOut = WsMsgOutStatus(this)
 }
 
 object SystemStatus {

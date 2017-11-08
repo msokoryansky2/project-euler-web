@@ -1,6 +1,6 @@
 package models
 
-import messages.{WebsocketMessageOut, WsMsgOutSolution}
+import msg.{WebsocketMsgOut, WsMsgOutSolution}
 import play.api.libs.json.{JsObject, Json}
 
 import scala.util.Try
@@ -35,7 +35,7 @@ class Solution private  (val problemNumber: Integer,
               "by" -> by.toJson,
               "mine" -> (if (mine) "1" else "0"))
 
-  def toWsMsg: WebsocketMessageOut = WsMsgOutSolution(this)
+  def toWsMsg: WebsocketMsgOut = WsMsgOutSolution(this)
 }
 
 object Solution {

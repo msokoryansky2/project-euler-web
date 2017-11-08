@@ -4,7 +4,7 @@ import java.net.URL
 import javax.inject._
 
 import actors.ClientHandler
-import akka.actor.{ActorSystem, Props}
+import akka.actor.{ActorRef, ActorSystem, Props}
 import akka.stream.Materializer
 import models.UserInfo
 import play.api.libs.json._
@@ -16,7 +16,8 @@ import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class WebsocketController @Inject()(cc: ControllerComponents)
+class WebsocketController @Inject()(cc: ControllerComponents,
+                                    @Named("client-broadcaster-actor") clientBroadcaster: ActorRef)
                                    (implicit ec: ExecutionContext, system: ActorSystem, mat: Materializer) {
   val logger = play.api.Logger(getClass)
 
@@ -27,10 +28,10 @@ class WebsocketController @Inject()(cc: ControllerComponents)
     * Creates a websocket if origin check passes.
     * @return a fully realized websocket.
     */
-  def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>
+  def ws: WebSocket = WebSocket.acceptOrResult[JsObject, JsObject] { request =>
     val userInfo = UserInfo(request)
     Future.successful({
-      if (sameOriginCheck) Right(ActorFlow.actorRef { out => ClientHandler.props(out, userInfo.uuid) })
+      if (sameOriginCheck(request)) Right(ActorFlow.actorRef { out => ClientHandler.props(clientBroadcaster, out, userInfo.uuid) })
       else Left(Forbidden)
     })
   }

@@ -9,7 +9,7 @@ import play.api.mvc._
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.duration._
 import akka.pattern.ask
-import messages.{MsgSolve, WsMsgOutSolution}
+import msg.{MsgSolve, WsMsgOutSolution}
 import models.{Solution, UserInfo}
 import play.api.Configuration
 import services.EulerProblemService

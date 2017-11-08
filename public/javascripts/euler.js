@@ -34,7 +34,7 @@ function problemSolved(data) {
         var id = data[i][0];
         var answer = data[i][1];
         $("span#answer_" + id).text(answer);
-        // The "solution" could be an error message
+        // The "solution" could be an error message or an "In Progress..." message
         if (Number.isNaN(Number(answer))) {
             $("button#problem_" + id).removeClass("in-progress solved").addClass("unsolved");
         } else {

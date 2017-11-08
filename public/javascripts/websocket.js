@@ -11,7 +11,7 @@ $(document).ready(function(e) {
         var loc = window.location;
         var wsUri = (loc.protocol === "https:") ? "wss:" : "ws:";
         wsUri += "//" + loc.host;
-        wsUri += loc.pathname + "system_monitor";
+        wsUri += loc.pathname + "websocket";
         return wsUri;
     }
 
@@ -38,9 +38,13 @@ $(document).ready(function(e) {
         //console.log(evt.data);
         var data = JSON.parse(evt.data);
         if (!!data && !!data.type) switch(data.type) {
-            case "system_status":
+            case "status":
                 updateTrace("JVM used memory: " +  data.memoryUsed + "MB");
-                updateSystemStatus(data);
+                updateStatus(data);
+                break;
+            case "solution":
+                updateTrace("Solution: " +  JSON.stringify(data));
+                updateSolution(data);
                 break;
             case "message":
                 var message = (!!data.message) ? data.message : data;
@@ -65,9 +69,13 @@ $(document).ready(function(e) {
         websocket.send(message);
     }
 
-    function updateSystemStatus(data) {
+    function updateStatus(data) {
         if (!!data && !!data.memoryFree && !!data.memoryMax) memoryGaugeUpdate(data.memoryFree, data.memoryMax);
         systemStatusPing();
+    }
+
+    function updateSolution(data) {
+         // meh
     }
 
     /*

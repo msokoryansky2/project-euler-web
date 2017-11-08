@@ -13,10 +13,10 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /project_euler/*num         controllers.ProjectEulerController.index(num: Int)
 
 # User info update controller
-GET     /user                       controllers.UserInfoController.index(name: String ?= "", city: String ?= "", country: String ?= "")
+GET     /user                       controllers.UserInfoController.userInfo(name: String ?= "", city: String ?= "", country: String ?= "")
 
 # Map system monitor
-GET     /websocket                  controllers.ws
+GET     /websocket                  controllers.WebsocketController.ws
 
 # Load-balancer health check ping
 GET     /ping                       controllers.PingController.index

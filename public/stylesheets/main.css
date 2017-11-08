@@ -62,7 +62,7 @@ div#error {
 }
 
 div.messages {
-    visibility: hidden;
+    /* visibility: hidden; */
 
     width: 100%;
     height: 300px;
@@ -142,6 +142,15 @@ div.euler-problem-link {
     text-align: right;
     font-weight: 300;
     font-size: 10px;
+}
+
+div.euler-problem-by {
+    width: 210px;
+    height: 15px
+    color: #808080;
+    text-align: center;
+    font-weight: 300;
+    font-size: 8px;
 }
 
 button.euler-problem {

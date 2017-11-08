@@ -1,4 +1,4 @@
-package messages
+package msg
 
 import akka.actor.ActorRef
 import models.{Solution, SystemStatus, UserInfo}
