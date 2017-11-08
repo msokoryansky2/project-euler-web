@@ -4,8 +4,9 @@ import java.net.URL
 import javax.inject._
 
 import actors.ClientHandler
-import akka.actor.ActorSystem
+import akka.actor.{ActorSystem, Props}
 import akka.stream.Materializer
+import models.UserInfo
 import play.api.libs.json._
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.Results._
@@ -24,12 +25,12 @@ class WebsocketController @Inject()(cc: ControllerComponents)
 
   /**
     * Creates a websocket if origin check passes.
-    *
     * @return a fully realized websocket.
     */
   def ws: WebSocket = WebSocket.acceptOrResult[String, String] { request =>
+    val userInfo = UserInfo(request)
     Future.successful({
-      if (sameOriginCheck) Right(ActorFlow.actorRef { out => ClientHandler.props(out) })
+      if (sameOriginCheck) Right(ActorFlow.actorRef { out => ClientHandler.props(out, userInfo.uuid) })
       else Left(Forbidden)
     })
   }

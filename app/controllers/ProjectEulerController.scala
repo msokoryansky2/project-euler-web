@@ -32,11 +32,11 @@ class ProjectEulerController @Inject()(system: ActorSystem,
 
   def index(num: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     logger.info(s"Web request for # $num")
-
+    val userInfo = UserInfo(request)
     // The call to eulerProblemMaster should complete quickly since we aren't going to get the solution
     // if this problem hasn't already been solved. We'll get an "In Progress..." message instead.
     implicit val timeout: Timeout = 10.seconds
-    (eulerProblemMaster ? MsgSolve(num, UserInfo(request)))
+    (eulerProblemMaster ? MsgSolve(num,userInfo))
       .recoverWith{
         case to: TimeoutException =>
           logger.info(s"Timeout for # $num")
@@ -46,7 +46,7 @@ class ProjectEulerController @Inject()(system: ActorSystem,
           Future(Solution.error(num, UserInfo(request), Solution.ERROR_OTHER))
       }
       .mapTo[Solution]
-      .map(sol => Ok(WsMsgOutSolution(sol).toJson))
+      .map(sol => Ok(WsMsgOutSolution(sol.asMine(userInfo.uuid)).toJson))
   }
 
   /*

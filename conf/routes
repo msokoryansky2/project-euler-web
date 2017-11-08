@@ -3,7 +3,7 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-# An example controller showing a sample home page
+# Home page controller
 GET     /                           controllers.HomeController.index
 
 # Map static resources from the /public folder to the /assets URL path
@@ -11,6 +11,9 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 
 # Map project_euler
 GET     /project_euler/*num         controllers.ProjectEulerController.index(num: Int)
+
+# User info update controller
+GET     /user                       controllers.UserInfoController.index(name: String ?= "", city: String ?= "", country: String ?= "")
 
 # Map system monitor
 GET     /websocket                  controllers.ws
