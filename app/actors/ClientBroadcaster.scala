@@ -21,7 +21,7 @@ class ClientBroadcaster  @Inject() (configuration: Configuration)
 
   // Instantiate a system status service that sends system statuses to this actor for re-broadcast to all clients
   context.system.scheduler.schedule(statusFreqSeconds seconds, statusFreqSeconds seconds) {
-    self ! SystemStatus.status.toWsMsg
+    self ! MsgBroadcastStatus(SystemStatus.status)
   }
 
   def receive: Receive = {

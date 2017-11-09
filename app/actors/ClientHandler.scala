@@ -9,15 +9,18 @@ import play.api.mvc.WebSocket.MessageFlowTransformer
 
 class ClientHandler @Inject()(@Named("client-broadcaster-actor") clientBroadcaster: ActorRef)
                              (out: ActorRef, uuid: String) extends Actor {
+  val logger = play.api.Logger(getClass)
 
   implicit val transformer: MessageFlowTransformer[JsObject, JsObject] =
     MessageFlowTransformer.jsonMessageFlowTransformer[JsObject, JsObject]
 
   override def preStart() = {
+    logger.info(s"ClientHandler preStart: $self for uuid $uuid")
     clientBroadcaster ! MsgRegisterClient(self)
   }
 
   override def postStop() = {
+    logger.info(s"ClientHandler postStop: $self for uuid $uuid")
     clientBroadcaster ! MsgDeregisterClient(self)
   }
 
