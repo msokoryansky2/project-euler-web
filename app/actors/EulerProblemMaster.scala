@@ -17,7 +17,7 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
     configuration.getOptional[Long]("project_euler.problem_max_age_seconds").getOrElse(1200)
 
   val cacheSolutions: Boolean =
-    configuration.getOptional[Long]("project_euler.cache_solutions").getOrElse(0) > 0
+    configuration.getOptional[Int]("project_euler.cache_solutions").getOrElse(0) > 0
 
   // Mutable cache of all problems that are solved or are in progress
   var solutions: scala.collection.mutable.Map[Integer, Solution] = scala.collection.mutable.Map()
@@ -43,7 +43,7 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
     case MsgSolve(problemNumber, by) =>
       logger.info(s"Master $self received request for # $problemNumber")
       // Check if the problems hasn't been solved yet or is stale and if so, start a new solution
-      if (!solutions.isDefinedAt(problemNumber) || solutions(problemNumber).isStale(maxAgeSeconds)) {
+      if (!cacheSolutions || !solutions.isDefinedAt(problemNumber) || solutions(problemNumber).isStale(maxAgeSeconds)) {
         solutions(problemNumber) = Solution.start(problemNumber, by)
         workerRouter.route(MsgSolveWorker(problemNumber), self)
       }

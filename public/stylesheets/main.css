@@ -114,7 +114,7 @@ div.euler-problem-solution {
     background-color: #FAFAFA; /* Light Gray */
 }
 
-div.euler-problem-progress {
+div.euler-problem-duration {
     float: left;
     display: inline-block;
     width: 30px;
@@ -170,13 +170,18 @@ button.unsolved {
 
 
 button.in-progress {
-    background-color: #F44336; /* Red */
+    background-color: #FFA500; /* Orange */
     color: black;
 }
 
 button.solved {
-    background-color: #008CBA; /* Blue */
+    background-color: #4CAF50; /* Green */
     color: white;
+}
+
+button.error {
+    background-color: #F44336; /* Red */
+    color: black;
 }
 
 div#overlay {

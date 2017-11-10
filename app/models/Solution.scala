@@ -33,7 +33,9 @@ class Solution private  (val problemNumber: Integer,
               "problem_number" -> problemNumber.toString,
               "answer" -> answer,
               "by" -> by.toJson,
-              "mine" -> (if (mine) "1" else "0"))
+              "mine" -> (if (mine) "1" else "0"),
+              "duration" -> (finishedAt - startedAt)
+    )
 
   def toWsMsg: WebsocketMsgOut = WsMsgOutSolution(this)
 }
