@@ -74,10 +74,6 @@ $(document).ready(function(e) {
         systemStatusPing();
     }
 
-    function updateSolution(data) {
-         // meh
-    }
-
     /*
      * Attempt to reconnect websocket after interval seconds with a countdown
      */

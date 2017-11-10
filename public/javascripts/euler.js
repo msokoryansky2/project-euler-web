@@ -29,16 +29,16 @@ function processSolution(solution) {
     // Sanity check that we are truly processing a solution message
     if (!solution || !solution.type || solution.type != "solution" || !solution.problemNumber) return;
 
-    console.log("A: " + solution.problemNumber);
+    console.log("Passed A: " + solution.problemNumber);
 
     // If this problem is already solved with a numeric response then we ignore this new solution
-    if (isAnsweredNumerically(problemNumber)) return;
+    if (isAnsweredNumerically(solution.problemNumber)) return;
 
-    console.log("B: " + solution.problemNumber);
+    console.log("Passed B: " + solution.problemNumber);
 
     if (!!solution.answer) {
         if (!Number.isNaN(solution.answer)) {
-            problemSuccess(solution.problemNumber, solution.answer, solution.isMine, solution.by);
+            problemSuccess(solution.problemNumber, solution.answer, solution.isMine, solution.by, solution.duration);
         } else {
             problemError(solution.problemNumber, solution.answer);
         }

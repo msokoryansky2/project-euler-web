@@ -30,9 +30,9 @@ class Solution private  (val problemNumber: Integer,
 
   def toJson: JsObject =
     Json.obj("type" -> "solution",
-              "problem_number" -> problemNumber.toString,
+              "problemNumber" -> problemNumber.toString,
               "answer" -> answer,
-              "by" -> by.toJson,
+              "by" -> by.desc,
               "mine" -> (if (mine) "1" else "0"),
               "duration" -> (finishedAt - startedAt)
     )

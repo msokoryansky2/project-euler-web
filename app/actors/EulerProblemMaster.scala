@@ -42,19 +42,40 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
       sender ! solutions.filter(s => s._2.isSolved).values
     case MsgSolve(problemNumber, by) =>
       logger.info(s"Master $self received request for # $problemNumber")
-      // Check if the problems hasn't been solved yet or is stale and if so, start a new solution
-      if (!cacheSolutions || !solutions.isDefinedAt(problemNumber) || solutions(problemNumber).isStale(maxAgeSeconds)) {
+
+      // Top-level check is whether a non-stale entry for a problem exists in the cache
+      if (solutions.isDefinedAt(problemNumber) && !solutions(problemNumber).isStale(maxAgeSeconds)) {
+        if (solutions(problemNumber).isSolved && cacheSolutions) {
+          // If problem is solved AND caching is enabled, then we send the solution to the asker
+          // and also broadcast the solution to everybody (the asker gets it again, but no biggie)
+          sender ! solutions(problemNumber)
+          clientBroadcaster ! MsgBroadcastSolution(solutions(problemNumber))
+        } else if (!solutions(problemNumber).isSolved) {
+          // If we are here that means problem is actively being solved (not stale).
+          // We continue to await the solution and in meanwhile send the "In progress..." to the asker
+          sender ! solutions(problemNumber)
+        } else {
+          // If we are here that means problem IS solved, but caching is disabled, so we solve the problem again.
+          // Note that we don't necessarily always start a solution for no-cache backend -- we first make sure
+          // that it's not already actively being solved! (So we don't start multiple parallel solutions for same problem)
+          solutions(problemNumber) = Solution.start(problemNumber, by)
+          sender ! solutions(problemNumber)
+          workerRouter.route(MsgSolveWorker(problemNumber), self)
+        }
+      } else {
+        // If the problem is not defined OR is stale, we always start its solution (regardless of caching)
+        // and send "In progress..." to the asker
         solutions(problemNumber) = Solution.start(problemNumber, by)
+        sender ! solutions(problemNumber)
         workerRouter.route(MsgSolveWorker(problemNumber), self)
       }
-      // Send either actual answer (if happens to be cached) or the canned "In progress..." answer to the asker
-      sender ! solutions(problemNumber)
+
     case MsgSolution(problemNumber, answer) =>
       logger.info(s"Master $self received answer *** $answer *** for # $problemNumber")
       // We ignore any solutions that we are not aware of -- should never really happen
       if (solutions.isDefinedAt(problemNumber)) {
-        // We may or may not cache solutions, depending on config
-        if (cacheSolutions) solutions(problemNumber) = solutions(problemNumber).complete(answer)
+        // We always cache solutions -- the decision whether to use the cache is in MsgSolve logic
+        solutions(problemNumber) = solutions(problemNumber).complete(answer)
         // Broadcast solution to all clients
         clientBroadcaster ! MsgBroadcastSolution(solutions(problemNumber))
       }
