@@ -44,7 +44,7 @@ $(document).ready(function(e) {
                 break;
             case "solution":
                 updateTrace("Solution: " +  JSON.stringify(data));
-                updateSolution(data);
+                processSolution(data);
                 break;
             case "message":
                 var message = (!!data.message) ? data.message : data;

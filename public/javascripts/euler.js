@@ -5,7 +5,7 @@ $(document).ready(function(e) {
         var id = $(this).attr('data-id');
         clearAnswer(id);
         $("button#problem_" + id).removeClass("unsolved solved").addClass("in-progress");
-        $.getJSON("project_euler/" + id, problemSolved).fail(function() { problemError(id) });
+        $.getJSON("project_euler/" + id, processProblemResponse).fail(function() { problemError(id, "HTTP Error :(") });
         wait(id, 0);
     })
 })
@@ -21,6 +21,10 @@ function isAnswered(id) {
     return ($("span#answer_" + id).text()).length > 0;
 }
 
+function isAnsweredNumerically(id) {
+    return isAnswered(id) && !Number.isNaN($("span#answer_" + id).text);
+}
+
 function wait(id, counter) {
     if (isAnswered(id)) return;
     $("span#progress_" + id).text(counter + " sec")
@@ -29,21 +33,39 @@ function wait(id, counter) {
     }, 1000);
 }
 
-function problemSolved(data) {
+function processProblemResponse(data) {
     for (var i = 0; i < data.length; i++) {
-        var id = data[i][0];
-        var answer = data[i][1];
-        $("span#answer_" + id).text(answer);
-        // The "solution" could be an error message or an "In Progress..." message
-        if (Number.isNaN(Number(answer))) {
-            $("button#problem_" + id).removeClass("in-progress solved").addClass("unsolved");
-        } else {
-            $("button#problem_" + id).removeClass("in-progress unsolved").addClass("solved");
-        }
+        var solution = data[i];
+        processSolution(solution);
     }
 }
 
-function problemError(id) {
-    $("span#answer_" + id).text("HTTP Error :(");
+function processSolution(solution) {
+    // Sanity check that we are truly processing a solution message
+    if (!solution || !solution.type || solution.type != "solution" || !solution.problemNumber) return;
+
+    // If this problem is already solved with a numeric response then we ignore this new solution
+    if (isAnsweredNumerically(problemNumber)) return;
+
+    if (!!solution.answer) {
+        if (!Number.isNaN(solution.answer) {
+            problemSuccess(solution.problemNumber, solution.answer, solution.isMine, solution.by);
+        } else {
+            problemError(solution.problemNumber, solution.answer);
+        }
+    } else {
+        problemError(solution.problemNumber, "Error :(");
+    }
+}
+
+function problemError(id, responseText) {
+    $("span#answer_" + id).text(responseText);
+    $("span#by_" + id).text("");
     $("button#problem_" + id).removeClass("in-progress solved").addClass("unsolved");
+}
+
+function problemSuccess(id, answer, isMine, by) {
+    $("span#answer_" + id).text(answer);
+    $("span#by_" + id).text(isMine ? "" : by);
+    $("button#problem_" + id).removeClass("in-progress unsolved").addClass("solved");
 }

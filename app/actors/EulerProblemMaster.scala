@@ -14,7 +14,10 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
   logger.info(s"CreatingEuler problem master $self")
 
   val maxAgeSeconds: Long =
-    configuration.getOptional[String]("project_euler.problem_max_age_seconds").getOrElse("1200").toLong
+    configuration.getOptional[Long]("project_euler.problem_max_age_seconds").getOrElse(1200)
+
+  val cacheSolutions: Boolean =
+    configuration.getOptional[Long]("project_euler.cache_solutions").getOrElse(0) > 0
 
   // Mutable cache of all problems that are solved or are in progress
   var solutions: scala.collection.mutable.Map[Integer, Solution] = scala.collection.mutable.Map()
@@ -44,13 +47,14 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
         solutions(problemNumber) = Solution.start(problemNumber, by)
         workerRouter.route(MsgSolveWorker(problemNumber), self)
       }
-      // Send either actual answer (if happens to be available) or the canned "In progress..." answer to the asker
+      // Send either actual answer (if happens to be cached) or the canned "In progress..." answer to the asker
       sender ! solutions(problemNumber)
     case MsgSolution(problemNumber, answer) =>
       logger.info(s"Master $self received answer *** $answer *** for # $problemNumber")
       // We ignore any solutions that we are not aware of -- should never really happen
       if (solutions.isDefinedAt(problemNumber)) {
-        solutions(problemNumber) = solutions(problemNumber).complete(answer)
+        // We may or may not cache solutions, depending on config
+        if (cacheSolutions) solutions(problemNumber) = solutions(problemNumber).complete(answer)
         // Broadcast solution to all clients
         clientBroadcaster ! MsgBroadcastSolution(solutions(problemNumber))
       }
