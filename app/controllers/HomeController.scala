@@ -2,8 +2,10 @@ package controllers
 
 import javax.inject._
 
+import models.UserInfo
 import play.api.mvc._
 import services.EulerProblemService
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -17,8 +19,9 @@ class HomeController @Inject()(cc: ControllerComponents) extends AbstractControl
 
   def index() = Action.async { implicit request: Request[AnyContent] =>
     logger.info(s"Web request for home page")
+    val userInfo = UserInfo(request)
     Future {
       EulerProblemService.availableProblems
-    } map (problemList => Ok(views.html.main(views.html.right(problemList))))
+    } map (problemList => Ok(views.html.main(views.html.right(problemList))).withSession(userInfo.toMap.toSeq: _*))
   }
 }
