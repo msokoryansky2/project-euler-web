@@ -12,7 +12,7 @@ function isAnswered(id) {
 }
 
 function isAnsweredNumerically(id) {
-    return isAnswered(id) && !Number.isNaN($("span#answer_" + id).text);
+    return isAnswered(id) && !isNaN($("span#answer_" + id).text);
 }
 
 function processProblemResponse(data) {
@@ -23,18 +23,11 @@ function processProblemResponse(data) {
 }
 
 function processSolution(solution) {
-
-    console.log(solution);
-
     // Sanity check that we are truly processing a solution message
     if (!solution || !solution.type || solution.type != "solution" || !solution.problemNumber) return;
 
-    console.log("Passed A: " + solution.problemNumber);
-
     // If this problem is already solved with a numeric response then we ignore this new solution
     if (isAnsweredNumerically(solution.problemNumber)) return;
-
-    console.log("Passed B: " + solution.problemNumber);
 
     if (!!solution.answer) {
         if (!Number.isNaN(solution.answer)) {
@@ -64,6 +57,6 @@ function problemError(id, responseText) {
 function problemSuccess(id, answer, isMine, by, duration) {
     $("span#answer_" + id).text(answer);
     $("span#duration_" + id).text("" + duration + " sec");
-    $("span#by_" + id).text(isMine ? "" : by);
+    $("span#by_" + id).text(isMine > 0 ? "" : by);
     $("button#problem_" + id).removeClass("in-progress unsolved error").addClass("solved");
 }

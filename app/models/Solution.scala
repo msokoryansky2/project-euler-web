@@ -33,7 +33,7 @@ class Solution private  (val problemNumber: Integer,
               "problemNumber" -> problemNumber.toString,
               "answer" -> answer,
               "by" -> by.desc,
-              "mine" -> (if (mine) "1" else "0"),
+              "isMine" -> (if (mine) "1" else "0"),
               "duration" -> (finishedAt - startedAt)
     )
 
