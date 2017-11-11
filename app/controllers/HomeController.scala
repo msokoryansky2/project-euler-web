@@ -24,7 +24,6 @@ class HomeController @Inject()(cc: ControllerComponents, configuration: Configur
     val userInfo = UserInfo(request)
     Future {
       EulerProblemService.availableProblems
-    } map (problemList => Ok(views.html.main(views.html.right(problemList))).withSession(userInfo.toMap.toSeq: _*))
-    } map (problemList => Ok(views.html.main(views.html.right(problemList))(googleApiScriptUrl)))
+    } map (problemList => Ok(views.html.main(views.html.right(problemList))(googleApiScriptUrl)).withSession(userInfo.toMap.toSeq: _*))
   }
 }

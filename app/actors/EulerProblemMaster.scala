@@ -11,7 +11,7 @@ import models.Solution
 class EulerProblemMaster @Inject() (configuration: Configuration,
                                     @Named("client-broadcaster-actor") clientBroadcaster: ActorRef) extends Actor {
   val logger = play.api.Logger(getClass)
-  logger.info(s"CreatingEuler problem master $self")
+  logger.info(s"Creating Euler problem master $self")
 
   val maxAgeSeconds: Long =
     configuration.getOptional[Long]("project_euler.problem_max_age_seconds").getOrElse(1200)

@@ -4,7 +4,7 @@ import javax.inject.Inject
 
 import akka.actor.{Actor, ActorRef}
 import msg._
-import models.{Solution, SystemStatus}
+import models.{Solution, SystemStatus, UserInfo}
 import play.api.Configuration
 
 import scala.concurrent.ExecutionContext
@@ -35,5 +35,7 @@ class ClientBroadcaster  @Inject() (configuration: Configuration)
       clients.foreach(_ ! solution.toWsMsg)
     case MsgBroadcastStatus(status: SystemStatus) =>
       clients.foreach(_ ! status.toWsMsg)
+    case MsgIpResolution(userInfo: UserInfo) =>
+      clients.foreach(_ ! userInfo.toWsMsg)
   }
 }
