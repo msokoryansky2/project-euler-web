@@ -100,9 +100,8 @@ div.message {
 }
 
 div.trace {
-    color: #DCDCDC;
+    color: #CBCBCB;
 }
-
 
 div.error {
     color: #F44336;
@@ -123,16 +122,21 @@ button.euler-problem {
     font-size: 16px;
 }
 
+div.wrapper-float-divs {
+    clear: both;
+    overflow: hidden;
+}
+
 div.euler-problem-solution {
     overflow: auto;
     white-space: nowrap;
     margin-left: 10px;
     margin-right: 10px;
-    height: 24px;
+    height: 36px;
     background-color: #FAFAFA; /* Light Gray */
 }
 
-div.euler-problem-progress {
+div.euler-problem-duration {
     float: left;
     display: inline-block;
     width: 30px;
@@ -162,6 +166,15 @@ div.euler-problem-link {
     font-size: 10px;
 }
 
+div.euler-problem-by {
+    width: 210px;
+    height: 12px
+    color: #808080;
+    text-align: center;
+    font-weight: 300;
+    font-size: 8px;
+}
+
 button.euler-problem {
     height: 60px;
     width: 210px;
@@ -179,13 +192,18 @@ button.unsolved {
 
 
 button.in-progress {
-    background-color: #F44336; /* Red */
+    background-color: #FFA500; /* Orange */
     color: black;
 }
 
 button.solved {
-    background-color: #008CBA; /* Blue */
+    background-color: #4CAF50; /* Green */
     color: white;
+}
+
+button.error {
+    background-color: #F44336; /* Red */
+    color: black;
 }
 
 div#overlay {

@@ -6,16 +6,21 @@
             <button type="button" class="euler-problem unsolved" id="problem_@p" data-id="@p"># @p</button>
         </div>
         <div class="euler-problem-solution">
-            <div class="euler-problem-progress">
-                <span class="progress" id="progress_@p">&nbsp;</span>
+            <div class="wrapper-float-divs">
+                <div class="euler-problem-duration">
+                    <span class="duration" id="duration_@p">&nbsp;</span>
+                </div>
+                <div class="euler-problem-answer">
+                    <span class="answer" id="answer_@p">&nbsp;</span>
+                </div>
+                <div class="euler-problem-link">
+                    <a href="https://projecteuler.net/problem=@p" target="_blank">
+                        <img src="@routes.Assets.versioned("images/external.png")"/>
+                    </a>
+                </div>
             </div>
-            <div class="euler-problem-answer">
-                <span class="answer" id="answer_@p">&nbsp;</span>
-            </div>
-            <div class="euler-problem-link">
-                <a href="https://projecteuler.net/problem=@p" target="_blank">
-                    <img src="@routes.Assets.versioned("images/external.png")"/>
-                </a>
+            <div class="euler-problem-by">
+                <span class="by" id="by_@p">&nbsp;</span>
             </div>
         </div>
     </div>
