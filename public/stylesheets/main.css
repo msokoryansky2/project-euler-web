@@ -169,10 +169,10 @@ div.euler-problem-link {
 div.euler-problem-by {
     width: 210px;
     height: 12px
-    color: #808080;
+    color: #000000;
     text-align: center;
     font-weight: 300;
-    font-size: 8px;
+    font-size: 0px;
 }
 
 button.euler-problem {

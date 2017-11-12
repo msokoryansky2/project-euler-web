@@ -32,7 +32,7 @@ class Solution private  (val problemNumber: Integer,
     Json.obj("type" -> "solution",
               "problemNumber" -> problemNumber.toString,
               "answer" -> answer,
-              "by" -> by.desc,
+              "by" -> by.toJson,
               "isMine" -> (if (mine) "1" else "0"),
               "duration" -> (finishedAt - startedAt)
     )
