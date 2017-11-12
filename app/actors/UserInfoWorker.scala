@@ -40,6 +40,7 @@ class UserInfoWorker extends Actor {
         case undefined: JsUndefined => ""
       }
       logger.info(s"Resolved IP # $ip as city $city in country $country at $lat, $long")
-      sender ! MsgIpResolution(UserInfo(uuid, ip).withCity(city).withCountry(country).withLatitude(lat).withLongitude(long))
+      sender ! MsgIpResolution(UserInfo(uuid, ip)
+        .withResolved("1").withCity(city).withCountry(country).withLatitude(lat).withLongitude(long))
   }
 }

@@ -13,7 +13,7 @@ GET     /assets/*file               controllers.Assets.versioned(path="/public",
 GET     /project_euler/*num         controllers.ProjectEulerController.index(num: Int)
 
 # User info update controller
-GET     /user                       controllers.UserInfoController.userInfo(name: String ?= "", city: String ?= "", country: String ?= "")
+GET     /user/*name                 controllers.UserInfoController.userInfo(name: String)
 
 # Map system monitor
 GET     /websocket                  controllers.WebsocketController.ws

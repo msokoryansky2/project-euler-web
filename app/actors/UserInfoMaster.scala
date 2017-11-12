@@ -8,7 +8,6 @@ import models.UserInfo
 import msg.{MsgIpResolution, MsgResolveIp}
 import play.api.Configuration
 
-
 class UserInfoMaster @Inject() (configuration: Configuration,
                                     @Named("client-broadcaster-actor") clientBroadcaster: ActorRef) extends Actor {
   val logger = play.api.Logger(getClass)

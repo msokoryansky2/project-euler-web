@@ -26,27 +26,30 @@ import scala.concurrent.{Future, TimeoutException}
 @Singleton
 class ProjectEulerController @Inject()(system: ActorSystem,
                                        @Named("euler-problem-master-actor") eulerProblemMaster: ActorRef,
+                                       @Named("user-info-master-actor") userInfoMaster: ActorRef,
                                        configuration: Configuration,
                                        cc: ControllerComponents) extends AbstractController(cc) {
   val logger = play.api.Logger(getClass)
 
   def index(num: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     logger.info(s"Web request for # $num")
-    val userInfo = UserInfo(request)
+
+    val userInfo: UserInfo = UserInfo(request, userInfoMaster)
+
     // The call to eulerProblemMaster should complete quickly since we aren't going to get the solution
     // if this problem hasn't already been solved. We'll get an "In Progress..." message instead.
     implicit val timeout: Timeout = 10.seconds
-    (eulerProblemMaster ? MsgSolve(num,userInfo))
+    (eulerProblemMaster ? MsgSolve(num, userInfo))
       .recoverWith{
         case to: TimeoutException =>
           logger.info(s"Timeout for # $num")
-          Future(Solution.error(num, UserInfo(request), Solution.ERROR_TIMEOUT))
+          Future(Solution.error(num, userInfo, Solution.ERROR_TIMEOUT))
         case _ =>
           logger.info(s"Unknown error for # $num")
-          Future(Solution.error(num, UserInfo(request), Solution.ERROR_OTHER))
+          Future(Solution.error(num, userInfo, Solution.ERROR_OTHER))
       }
       .mapTo[Solution]
-      .map(sol => Ok(WsMsgOutSolution(sol.asMine(userInfo.uuid)).toJson))
+      .map(sol => Ok(WsMsgOutSolution(sol.asMine(userInfo.uuid)).toJson).withSession(userInfo.toMap.toSeq: _*))
   }
 
   /*
