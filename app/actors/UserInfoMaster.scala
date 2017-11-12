@@ -52,7 +52,9 @@ class UserInfoMaster @Inject() (configuration: Configuration,
       // Ignore the resolution if either UUID or IP don't match.
       if (sessions.isDefinedAt(userInfo.uuid) && sessions(userInfo.uuid).ip == userInfo.ip) {
         sessions(userInfo.uuid) = userInfo
-        ip2geo(userInfo.ip) = userInfo.withUuid("")       // cache the IP-to-geo resolution separately for the future
+        // Cache the IP-to-geo resolution separately for the future
+        ip2geo(userInfo.ip) = userInfo.withUuid("")
+        // Broadcast the new resolution so it goes to the front-end as a "User Login" event
         clientBroadcaster ! MsgIpResolution(userInfo)
       }
   }

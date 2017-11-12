@@ -1,7 +1,8 @@
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Named}
 
+import akka.actor.ActorRef
 import org.scalatestplus.play._
 import org.scalatestplus.play.guice._
 import play.api.Configuration
@@ -14,12 +15,14 @@ import play.api.test.Helpers._
  *
  * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
  */
-class HomeControllerSpec @Inject()(configuration: Configuration) extends PlaySpec with GuiceOneAppPerTest with Injecting {
+class HomeControllerSpec @Inject()(configuration: Configuration,
+                                   @Named("user-info-master-actor") userInfoMaster: ActorRef)
+  extends PlaySpec with GuiceOneAppPerTest with Injecting {
 
   "HomeController GET" should {
 
     "render the index page from a new instance of controller" in {
-      val controller = new HomeController(stubControllerComponents(), configuration)
+      val controller = new HomeController(stubControllerComponents(), configuration, userInfoMaster)
       val home = controller.index().apply(FakeRequest(GET, "/"))
 
       status(home) mustBe OK

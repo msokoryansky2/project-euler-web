@@ -6,7 +6,10 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.RequestHeader
 import scala.concurrent.{Await, Future}
 import akka.pattern.ask
+import akka.util.Timeout
 import scala.concurrent.duration._
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 case class UserInfo private (uuid: String = "",
                              ip: String = "",
@@ -59,6 +62,7 @@ object UserInfo {
         val uuid = request.session.get("uuid").getOrElse(java.util.UUID.randomUUID.toString)
         val ip = request.remoteAddress
         // Unfortunately, block. But this should be near-instantaneous and only once per session
+        implicit val timeout: Timeout = 3.seconds
         Await.result((userInfoMaster ? MsgResolveIp(uuid, ip))
           .recoverWith{
             case _ => Future(MsgIpResolution(UserInfo(uuid, ip)))
@@ -72,7 +76,7 @@ object UserInfo {
     * It is up to the caller to recover from Failure.
     */
   def apply(request: RequestHeader): Option[UserInfo] =
-    if (request.session.get("uuid").getOrElse("").isEmpty || !request.session.get("resolved").getOrElse("false").toBoolean)
+    if (request.session.get("uuid").getOrElse("").isEmpty || request.session.get("resolved").getOrElse("0").toLong == 0)
       None
     else
       Some(new UserInfo(request.session.get("uuid").getOrElse(""),
