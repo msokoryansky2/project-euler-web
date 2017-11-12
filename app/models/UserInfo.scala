@@ -7,6 +7,8 @@ import play.api.mvc.RequestHeader
 import scala.concurrent.{Await, Future}
 import akka.pattern.ask
 import akka.util.Timeout
+import play.api.Configuration
+
 import scala.concurrent.duration._
 import scala.concurrent._
 import ExecutionContext.Implicits.global
@@ -53,14 +55,14 @@ object UserInfo {
   /**
     * Return UserInfo from current session, if set. If not, initiate resolution of current session
     */
-  def apply(request: RequestHeader, userInfoMaster: ActorRef): UserInfo =
+  def apply(config: Configuration, request: RequestHeader, userInfoMaster: ActorRef): UserInfo =
     // Start by attempting to extract UserInfo from current session
-    UserInfo(request)
+    UserInfo(config, request)
       // Fall back to requesting resolution of current session's IP
       .getOrElse{
         // Keep current session's UUID if available, even if the IP hasn't yet been resolved.
         val uuid = request.session.get("uuid").getOrElse(java.util.UUID.randomUUID.toString)
-        val ip = request.remoteAddress
+        val ip = getIp(config, request)
         // Unfortunately, block. But this should be near-instantaneous and only once per session
         implicit val timeout: Timeout = 3.seconds
         Await.result((userInfoMaster ? MsgResolveIp(uuid, ip))
@@ -75,19 +77,30 @@ object UserInfo {
     * Attempt to recover UserInfo from session but only if it's resolved. None otherwise.
     * It is up to the caller to recover from Failure.
     */
-  def apply(request: RequestHeader): Option[UserInfo] =
+  def apply(config: Configuration, request: RequestHeader): Option[UserInfo] =
     if (request.session.get("uuid").getOrElse("").isEmpty || request.session.get("resolved").getOrElse("0").toLong == 0)
       None
     else
       Some(new UserInfo(request.session.get("uuid").getOrElse(""),
-      request.remoteAddress,                                              // always use currently known IP address
-      request.session.get("resolved").getOrElse("0"),
-      request.session.get("name").getOrElse(""),
-      request.session.get("city").getOrElse(""),
-      request.session.get("country").getOrElse(""),
-      request.session.get("lat").getOrElse(""),
-      request.session.get("long").getOrElse("")))
+            getIp(config, request),                                    // always use currently known IP address
+            request.session.get("resolved").getOrElse("0"),
+            request.session.get("name").getOrElse(""),
+            request.session.get("city").getOrElse(""),
+            request.session.get("country").getOrElse(""),
+            request.session.get("lat").getOrElse(""),
+            request.session.get("long").getOrElse("")))
 
   def apply(uuid: String, ip: String): UserInfo = new UserInfo(uuid, ip)
 
+  /**
+    * Spoof IPs if config dictates it
+    */
+  def getIp(config: Configuration, request: RequestHeader): String = {
+    if (config.getOptional[String]("project_euler.spoof_ip").getOrElse("0").toInt > 0) {
+      val r = scala.util.Random
+      "" + (2 + r.nextInt(250)) + "." + (2 + r.nextInt(250)) + "." + (2 + r.nextInt(250)) + "." + (2 + r.nextInt(250))
+    } else {
+      request.remoteAddress
+    }
+  }
 }

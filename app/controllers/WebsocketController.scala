@@ -2,6 +2,7 @@ package controllers
 
 import java.net.URL
 import javax.inject._
+
 import actors.ClientHandler
 import akka.actor.{ActorRef, ActorSystem}
 import akka.stream.Materializer
@@ -11,10 +12,13 @@ import play.api.libs.streams.ActorFlow
 import play.api.mvc.Results._
 import play.api.mvc.WebSocket.MessageFlowTransformer
 import play.api.mvc._
+import play.api.Configuration
+
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class WebsocketController @Inject()(cc: ControllerComponents,
+                                    config: Configuration,
                                     @Named("client-broadcaster-actor") clientBroadcaster: ActorRef,
                                     @Named("user-info-master-actor") userInfoMaster: ActorRef)
                                    (implicit ec: ExecutionContext, system: ActorSystem, mat: Materializer) {
@@ -29,7 +33,7 @@ class WebsocketController @Inject()(cc: ControllerComponents,
     */
   def ws: WebSocket = WebSocket.acceptOrResult[JsObject, JsObject] { request =>
 
-    val userInfo: UserInfo = UserInfo(request, userInfoMaster)
+    val userInfo: UserInfo = UserInfo(config, request, userInfoMaster)
 
     Future.successful({
       if (sameOriginCheck(request)) Right(ActorFlow.actorRef { out => ClientHandler.props(clientBroadcaster, out, userInfo.uuid) })

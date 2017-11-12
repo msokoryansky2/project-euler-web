@@ -24,7 +24,7 @@ class HomeController @Inject()(cc: ControllerComponents,
 
   def index() = Action.async { implicit request: Request[AnyContent] =>
     logger.info(s"Web request for home page")
-    val userInfo: UserInfo = UserInfo(request, userInfoMaster)
+    val userInfo: UserInfo = UserInfo(configuration, request, userInfoMaster)
     Future {
       EulerProblemService.availableProblems
     } map (problemList => Ok(views.html.main(views.html.right(problemList))(googleApiScriptUrl)).withSession(userInfo.toMap.toSeq: _*))

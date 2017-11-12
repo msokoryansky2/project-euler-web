@@ -34,7 +34,7 @@ class ProjectEulerController @Inject()(system: ActorSystem,
   def index(num: Int): Action[AnyContent] = Action.async { implicit request: Request[AnyContent] =>
     logger.info(s"Web request for # $num")
 
-    val userInfo: UserInfo = UserInfo(request, userInfoMaster)
+    val userInfo: UserInfo = UserInfo(configuration, request, userInfoMaster)
 
     // The call to eulerProblemMaster should complete quickly since we aren't going to get the solution
     // if this problem hasn't already been solved. We'll get an "In Progress..." message instead.

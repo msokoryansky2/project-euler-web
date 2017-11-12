@@ -27,7 +27,7 @@ class UserInfoWorker extends Actor {
         case JsDefined(v) => v.toString()
         case undefined: JsUndefined => ""
       }
-      val country  = jsValue \ "country" match {
+      val country  = jsValue \ "country_name" match {
         case JsDefined(v) => v.toString()
         case undefined: JsUndefined => ""
       }
