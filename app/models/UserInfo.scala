@@ -41,6 +41,8 @@ case class UserInfo private (uuid: String = "",
         else if (!ip.isEmpty) s" at $ip"
         else " Guy Incognito")
 
+  def isResolved: Boolean = resolved.toInt > 0
+
   def withUuid(u: String): UserInfo = new UserInfo(u, ip, resolved, name, city, country, lat, long)
   def withIp(i: String): UserInfo = new UserInfo(uuid, i,resolved, name, city, country, lat, long)
   def withResolved(r: String): UserInfo = new UserInfo(uuid, ip, r, name, city, country, lat, long)

@@ -24,19 +24,19 @@ class UserInfoWorker extends Actor {
       logger.info(s"IP-to-geo worker $self received request for IP # $ip")
       val jsValue = Json.parse(SimpleHttpRequest.get(getWsUrl(ip)))
       val city  = jsValue \ "city" match {
-        case JsDefined(v) => v.toString()
+        case JsDefined(v) => v.toString().replaceAllLiterally("\"", "")
         case undefined: JsUndefined => ""
       }
       val country  = jsValue \ "country_name" match {
-        case JsDefined(v) => v.toString()
+        case JsDefined(v) => v.toString().replaceAllLiterally("\"", "")
         case undefined: JsUndefined => ""
       }
       val lat  = jsValue \ "latitude" match {
-        case JsDefined(v) => v.toString()
+        case JsDefined(v) => v.toString().replaceAllLiterally("\"", "")
         case undefined: JsUndefined => ""
       }
       val long = jsValue \ "longitude" match {
-        case JsDefined(v) => v.toString()
+        case JsDefined(v) => v.toString().replaceAllLiterally("\"", "")
         case undefined: JsUndefined => ""
       }
       logger.info(s"Resolved IP # $ip as city $city in country $country at $lat, $long")
