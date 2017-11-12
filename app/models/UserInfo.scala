@@ -62,7 +62,7 @@ object UserInfo {
       .getOrElse{
         // Keep current session's UUID if available, even if the IP hasn't yet been resolved.
         val uuid = request.session.get("uuid").getOrElse(java.util.UUID.randomUUID.toString)
-        val ip = getIp(config, request)
+        val ip = getIp(uuid, config, request)
         // Unfortunately, block. But this should be near-instantaneous and only once per session
         implicit val timeout: Timeout = 3.seconds
         Await.result((userInfoMaster ? MsgResolveIp(uuid, ip))
@@ -80,24 +80,26 @@ object UserInfo {
   def apply(config: Configuration, request: RequestHeader): Option[UserInfo] =
     if (request.session.get("uuid").getOrElse("").isEmpty || request.session.get("resolved").getOrElse("0").toLong == 0)
       None
-    else
-      Some(new UserInfo(request.session.get("uuid").getOrElse(""),
-            getIp(config, request),                                    // always use currently known IP address
-            request.session.get("resolved").getOrElse("0"),
-            request.session.get("name").getOrElse(""),
-            request.session.get("city").getOrElse(""),
-            request.session.get("country").getOrElse(""),
-            request.session.get("lat").getOrElse(""),
-            request.session.get("long").getOrElse("")))
+    else {
+      val uuid = request.session.get("uuid").getOrElse(java.util.UUID.randomUUID.toString)
+      Some(new UserInfo(uuid,
+                        getIp(uuid, config, request), // always use currently known IP address
+                        request.session.get("resolved").getOrElse("0"),
+                        request.session.get("name").getOrElse(""),
+                        request.session.get("city").getOrElse(""),
+                        request.session.get("country").getOrElse(""),
+                        request.session.get("lat").getOrElse(""),
+                        request.session.get("long").getOrElse("")))
+    }
 
   def apply(uuid: String, ip: String): UserInfo = new UserInfo(uuid, ip)
 
   /**
     * Spoof IPs if config dictates it
     */
-  def getIp(config: Configuration, request: RequestHeader): String = {
+  def getIp(uuid: String, config: Configuration, request: RequestHeader): String = {
     if (config.getOptional[String]("project_euler.spoof_ip").getOrElse("0").toInt > 0) {
-      val r = scala.util.Random
+      val r = new scala.util.Random(uuid.hashCode)
       "" + (2 + r.nextInt(250)) + "." + (2 + r.nextInt(250)) + "." + (2 + r.nextInt(250)) + "." + (2 + r.nextInt(250))
     } else {
       request.remoteAddress
