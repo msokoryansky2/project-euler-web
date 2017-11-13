@@ -1,4 +1,4 @@
-const INTERVAL_PERSIST_MARKER_SEC = 60;
+const INTERVAL_PERSIST_MARKER_SEC = 10;
 
 var map = false;
 
@@ -30,10 +30,9 @@ function mapEvent(event, geo, text) {
         map: map,
         animation: google.maps.Animation.DROP,
         position: {lat: parseFloat("" + geo.lat), lng: parseFloat("" + geo.long)},
-        label: !!text ? text : "",
     });
-    map.setZoom(5);
+    map.setZoom(4);
     map.panTo(marker.position);
     // Remove this marker after a timeout
-    setTimeout(function() { marker.setMap(null); }, INTERVAL_PERSIST_MARKER_SEC);
+    setTimeout(function() { marker.setMap(null); }, INTERVAL_PERSIST_MARKER_SEC * 1000);
 }
