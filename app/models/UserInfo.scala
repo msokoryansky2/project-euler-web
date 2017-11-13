@@ -100,7 +100,7 @@ object UserInfo {
     * Spoof IPs if config dictates it
     */
   def getIp(uuid: String, config: Configuration, request: RequestHeader): String = {
-    if (config.getOptional[String]("project_euler.spoof_ip").getOrElse("0").toInt > 0) {
+    if (config.getOptional[String]("project_euler.mock_ip").getOrElse("0").toInt > 0) {
       val r = new scala.util.Random(uuid.hashCode)
       "" + (2 + r.nextInt(250)) + "." + (2 + r.nextInt(250)) + "." + (2 + r.nextInt(250)) + "." + (2 + r.nextInt(250))
     } else {

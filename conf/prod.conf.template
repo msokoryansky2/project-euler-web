@@ -3,3 +3,5 @@ include "application.conf"
 play.http.secret.key=TBD
 
 google.api.key=TBD
+
+project_euler.mock_ip = 0

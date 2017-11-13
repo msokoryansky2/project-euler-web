@@ -61,5 +61,6 @@ function problemSuccess(id, solution) {
     $("span#by_" + id).text(solution.isMine > 0 ? "" : solution.by.desc);
     $("button#problem_" + id).removeClass("in-progress unsolved error").addClass("solved");
 
-    if (solution.isMine <= 0) mapEvent("solution", solution.by, "# " + solution.problemNumber);
+    // Create a map event for aolutions (mine and others')
+    /* if (solution.isMine <= 0) */ mapEvent("solution", solution.by, "# " + solution.problemNumber);
 }
