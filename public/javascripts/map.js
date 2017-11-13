@@ -31,7 +31,7 @@ function mapEvent(event, geo, text) {
         animation: google.maps.Animation.DROP,
         position: {lat: parseFloat("" + geo.lat), lng: parseFloat("" + geo.long)},
     });
-    map.setZoom(4);
+    map.setZoom(3);
     map.panTo(marker.position);
     // Remove this marker after a timeout
     setTimeout(function() { marker.setMap(null); }, INTERVAL_PERSIST_MARKER_SEC * 1000);

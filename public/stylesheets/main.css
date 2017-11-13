@@ -57,7 +57,7 @@ div.map-title {
     color: black;
     text-align: center;
     font-weight: 300;
-    font-size: 10px;
+    font-size: 11px;
     color: black;
 }
 
@@ -80,7 +80,7 @@ div#map {
 }
 
 div.messages {
-    /* visibility: hidden; */
+    visibility: hidden;
 
     width: 100%;
     height: 100px;
