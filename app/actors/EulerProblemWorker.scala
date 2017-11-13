@@ -15,7 +15,7 @@ class EulerProblemWorker extends Actor {
   implicit val blockingDispatcher: MessageDispatcher = context.system.dispatchers.lookup("euler-blocking-context")
 
   val logger = play.api.Logger(getClass)
-  logger.info(s"CreatingEuler problem worker $self")
+  logger.info(s"Creating Euler problem worker $self")
 
   def receive: Receive = {
     case MsgSolveWorker(problemNumber) =>

@@ -12,7 +12,7 @@ $(document).ready(function(e) {
         showNeedle: false,
         fill: '0-#A9A9A9:0-#008CBA:100',
         paddingY: 15,
-        paddingX: 40,
+        paddingX: 100,
         valueLabel: {
             display: false,
         },

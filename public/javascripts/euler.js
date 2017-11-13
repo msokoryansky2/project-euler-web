@@ -31,7 +31,7 @@ function processSolution(solution) {
 
     if (!!solution.answer) {
         if (!Number.isNaN(solution.answer)) {
-            problemSuccess(solution.problemNumber, solution.answer, solution.isMine, solution.by, solution.duration);
+            problemSuccess(solution.problemNumber, solution);
         } else {
             problemError(solution.problemNumber, solution.answer);
         }
@@ -54,9 +54,12 @@ function problemError(id, responseText) {
     $("button#problem_" + id).removeClass("in-progress solved unsolved").addClass("error");
 }
 
-function problemSuccess(id, answer, isMine, by, duration) {
-    $("span#answer_" + id).text(answer);
-    $("span#duration_" + id).text("" + duration + " sec");
-    $("span#by_" + id).text(isMine > 0 ? "" : by);
+function problemSuccess(id, solution) {
+    var id = solution.problemNumber;
+    $("span#answer_" + id).text(solution.answer);
+    $("span#duration_" + id).text("" + solution.duration + " sec");
+    $("span#by_" + id).text(solution.isMine > 0 ? "" : solution.by.desc);
     $("button#problem_" + id).removeClass("in-progress unsolved error").addClass("solved");
+
+    if (solution.isMine <= 0) mapEvent("solution", solution.by, "# " + solution.problemNumber);
 }

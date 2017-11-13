@@ -7,7 +7,7 @@ $(document).ready(function(e) {
         gaugeWidth: 10,
         showNeedle: false,
         paddingY: 15,
-        paddingX: 40,
+        paddingX: 100,
         valueLabel: {
             display: false,
         },

@@ -1,6 +1,6 @@
 package msg
 
-import models.{Solution, SystemStatus}
+import models.{Solution, SystemStatus, UserInfo}
 import play.api.libs.json.{JsObject, Json}
 
 sealed abstract class WebsocketMsgOut {
@@ -13,6 +13,7 @@ object WebsocketMsgOut {
   val TYPE_SOLUTION = "solution"
   val TYPE_SOLUTIONS = "solutions"
   val TYPE_STATUS = "status"
+  val TYPE_USER_LOGIN = "user_login"
   val TYPE_MESSAGE = "message"
   val TYPE_ERROR = "error"
 }
@@ -30,6 +31,11 @@ case class WsMsgOutSolutions(ss: Set[Solution]) extends WebsocketMsgOut {
 case class WsMsgOutStatus(status: SystemStatus) extends WebsocketMsgOut {
   override def msgType: String = WebsocketMsgOut.TYPE_STATUS
   override def toJsonPayload: JsObject = status.toJson
+}
+
+case class WsMsgOutUserLogin(userInfo: UserInfo) extends WebsocketMsgOut {
+  override def msgType: String = WebsocketMsgOut.TYPE_USER_LOGIN
+  override def toJsonPayload: JsObject = userInfo.toJson
 }
 
 case class WsMsgOutMsg(msg: String) extends WebsocketMsgOut {
