@@ -29,7 +29,7 @@ function mapEvent(event, geo, text) {
                     "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"),
         map: map,
         animation: google.maps.Animation.DROP,
-        position: {lat: geo.lat, lng: geo.long},
+        position: {lat: parseFloat("" + geo.lat), lng: parseFloat("" + geo.long)},
         label: !!text ? text : "",
     });
     map.setZoom(5);
