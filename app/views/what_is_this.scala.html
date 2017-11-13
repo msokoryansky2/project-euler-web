@@ -3,7 +3,6 @@
     <div style="margin-top: 20px"></div>
 
 
-
     <div class="overlay-title">
         WELCOME TO MY PROJECT EULER WEB APP
     </div>
@@ -14,17 +13,15 @@
     </div>
 
 
-
     <div class="overlay-title">
         WHAT ARE ALL THESE BUTTONS?
     </div>
 
     <div class="overlay-text">
-        Each grey button corresponds to one Project Euler problem. The button turns red while the solution
-        is in progress and then blue once it's solved. The answer is displayed below the button. Below and to the right
+        Each grey button corresponds to one Project Euler problem. The button turns orange while the solution
+        is in progress and then green once it's solved. The answer is displayed below the button. Below and to the right
         of the button is a link to the problem description on Project Euler website.
     </div>
-
 
 
     <div class="overlay-title">
@@ -53,19 +50,36 @@
     </div>
 
 
+    <div class="overlay-title">
+        WHY IS THERE A MAP?
+    </div>
+
+    <div class="overlay-text">
+        This web app allows different users "share" their solutions. If one user solves a problem, the answer is
+        instantly broadcast to all other users as well. The corresponding problem button will turn green on all their
+        screens, under the button there will be a note about where the solution took place, and the map will pan over
+        to the location of the solver. In addition, the map will pan to the locations of newly connected users.
+    </div>
+
+    <div class="overlay-text">
+        You can open the app up in two different browsers (tabs of the same browser share cookies, so you don't get the
+        same effect) to get a feel for user experience with multiple simultaneous users.
+    </div>
+
+
 
     <div class="overlay-title">
         WHAT IS THE TECHNOLOGY STACK FOR THIS WEB APP?
     </div>
 
     <div class="overlay-text">
-        The backend is written in Scala using Play framework and Akka. It runs on an AWS "micro" instance
+        The backend is written in Scala using Play framework and Akka. It runs on a single AWS "micro" instance
         (1 virtual CPU and 1GB of RAM), inside a Docker container managed by the EC2 Container Service (ECS).
     </div>
 
     <div class="overlay-text">
-        The front-end is HTML with CSS and jQuery. It uses Ajax to get problem answers and
-        Websockets to receive a continuous stream of system status updates from the backend.
+        The front-end is HTML with CSS and jQuery. It uses Ajax to request problems to be solved and
+        Websockets to broadcast newly available solutions, user login events, and system status from the backend.
     </div>
 
 
@@ -88,15 +102,18 @@
 
     <div class="overlay-text">
         Project Euler is hard :) Many of my Project Euler solutions are very memory- and CPU-intensive, especially for
-        the higher-numbered problems. The backend's hardware is outmatched by some of these problems.
+        the higher-numbered problems. Several of the problems can individually overwhelm the backend.
     </div>
 
     <div class="overlay-text">
-        It turned out very hard to tune the backend to stay responsive as it's solving Project Euler problems that
-        each may use 100% of CPU capacity and nearly 100% of available memory. Currently all Akka actors that are
-        solving the problems on the backend run in a separate fork-join thread pool
-        (so under-utilized workers can "steal work" from over-utilized ones) with just one message processed per actor
-        before another actor gets a chance at execution. However "GC overhead limit exceeded" errors leading to eventual
-        backend crashes and auto-restart by the ECS are still possible, as are lengthy unresponsive periods.
+        The backend can become unresponsive as it's solving some of the more resource-intensive problems.
+        It eventually recovers -- either via finally solving the pending problems or by running out of memory,
+        crashing, and being auto-restarted by ECS.
     </div>
+
+    <div class="overlay-text">
+        I may explore shifting the solution logic to AWS Lambda which should solve the responsiveness issue.
+        Of course, beefing up the hardware would solve it as well.
+    </div>
+
 </div>

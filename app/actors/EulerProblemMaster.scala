@@ -11,7 +11,7 @@ import models.Solution
 class EulerProblemMaster @Inject() (configuration: Configuration,
                                     @Named("client-broadcaster-actor") clientBroadcaster: ActorRef) extends Actor {
   val logger = play.api.Logger(getClass)
-  logger.info(s"CreatingEuler problem master $self")
+  logger.info(s"Creating Euler problem master $self")
 
   val maxAgeSeconds: Long =
     configuration.getOptional[Long]("project_euler.problem_max_age_seconds").getOrElse(1200)
@@ -23,7 +23,7 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
   var solutions: scala.collection.mutable.Map[Integer, Solution] = scala.collection.mutable.Map()
 
   val workerRouter: Router = {
-    val numWorkers: Integer = configuration.getOptional[String]("project_euler.workers_per_cpu").getOrElse("4").toInt *
+    val numWorkers: Integer = configuration.getOptional[String]("project_euler.workers_per_cpu").getOrElse("2").toInt *
                                 Runtime.getRuntime.availableProcessors
 
     logger.info(s"Creating router with $numWorkers Euler problem workers")

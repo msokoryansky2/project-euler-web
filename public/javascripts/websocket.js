@@ -46,6 +46,11 @@ $(document).ready(function(e) {
                 updateTrace("Solution: " +  JSON.stringify(data));
                 processSolution(data);
                 break;
+            case "user_login":
+                var message = "New login: " + data.desc;
+                updateMessage(message);
+                mapEvent("user_login", data, "");
+                break;
             case "message":
                 var message = (!!data.message) ? data.message : data;
                 updateMessage(message);

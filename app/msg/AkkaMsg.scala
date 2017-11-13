@@ -14,3 +14,7 @@ case class MsgRegisterClient(client: ActorRef) extends MsgBroadcast
 case class MsgDeregisterClient(client: ActorRef) extends MsgBroadcast
 case class MsgBroadcastSolution(solution: Solution) extends MsgBroadcast
 case class MsgBroadcastStatus(status: SystemStatus) extends MsgBroadcast
+
+sealed trait MsgIp2Geo
+case class MsgResolveIp(uuid: String, ip: String) extends MsgIp2Geo
+case class MsgIpResolution(userInfo: UserInfo) extends MsgIp2Geo
