@@ -31,8 +31,18 @@ function mapEvent(event, geo, text) {
         animation: google.maps.Animation.DROP,
         position: {lat: parseFloat("" + geo.lat), lng: parseFloat("" + geo.long)},
     });
+
+    // Create a new info window
+    var infoWindow = false;
+    if (!!text) {
+        infoWindow = new google.maps.InfoWindow({
+            content: text
+        });
+        infoWindow.open(map, marker);
+    }
+
     map.setZoom(3);
     map.panTo(marker.position);
     // Remove this marker after a timeout
-    setTimeout(function() { marker.setMap(null); }, INTERVAL_PERSIST_MARKER_SEC * 1000);
+    setTimeout(function() { marker.setMap(null); if (!!infoWindow) infoWindow.close() }, INTERVAL_PERSIST_MARKER_SEC * 1000);
 }

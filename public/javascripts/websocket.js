@@ -49,7 +49,7 @@ $(document).ready(function(e) {
             case "user_login":
                 var message = "New login: " + data.desc;
                 updateMessage(message);
-                mapEvent("user_login", data, "");
+                mapEvent("user_login", data, "New login. " + data.desc);
                 break;
             case "message":
                 var message = (!!data.message) ? data.message : data;
