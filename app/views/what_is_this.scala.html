@@ -18,9 +18,9 @@
     </div>
 
     <div class="overlay-text">
-        Each grey button corresponds to one Project Euler problem. The button turns orange while the solution
-        is in progress and then green once it's solved. The answer is displayed below the button. Below and to the right
-        of the button is a link to the problem description on Project Euler website.
+        Each grey button represents one Project Euler problem. Push it to solve the problem on the server.
+        The button turns orange while the solution is in progress. Once solved, the button turns green and the answer is
+        displayed. Below the button is a link to the problem statement on Project Euler website.
     </div>
 
 
@@ -29,24 +29,15 @@
     </div>
 
     <div class="overlay-text">
-        The two gauges on the left represent the state of this web app's backend.
-        They are updated continuously via a Websocket connection.
+        The two gauges on the left represent the state of the server. They are updated via a Websocket connection.
+        The top gauge shows the server's Java Virtual Machine (JVM) memory utilization. It can reach 100% for
+        more demanding problems. The bottom gauge shows server's responsiveness. It should be near or at 100%
+        until the server becomes overloaded.
     </div>
 
     <div class="overlay-text">
-        The top gauge shows the Java Virtual Machine (JVM) memory utilization (relative to max available to the JVM).
-        It should be close to 0% when there is plenty of free memory but can quickly approach 100% for more demanding
-        problems.
-    </div>
-
-    <div class="overlay-text">
-        The bottom gauge shows the general responsiveness of the backend. It will stay at 100% until the backend becomes
-        overloaded with problems, especially if those problems also push memory utilization close to 100%.
-    </div>
-
-    <div class="overlay-text">
-        Try opening this page in different browser windows and clicking a few of the problem buttons.
-        You'll see gauges in both browsers move in sync as they receive the same status data from their common backend.
+        Try opening this page in different browser windows and quickly clicking several problem buttons.
+        You'll see gauges in both browsers move in sync as they receive the same stream of data from the server.
     </div>
 
 
@@ -55,17 +46,14 @@
     </div>
 
     <div class="overlay-text">
-        This web app allows different users "share" their solutions. If one user solves a problem, the answer is
-        instantly broadcast to all other users as well. The corresponding problem button will turn green on all their
-        screens, under the button there will be a note about where the solution took place, and the map will pan over
-        to the location of the solver. In addition, the map will pan to the locations of newly connected users.
+        The web app uses Websockets to let the users know what other users are doing. Whenever a new user
+        opens the web app or solves a problem, that event is instantly broadcast to all other users.
     </div>
 
     <div class="overlay-text">
-        You can open the app up in two different browsers (tabs of the same browser share cookies, so you don't get the
-        same effect) to get a feel for user experience with multiple simultaneous users.
+        Try opening the app in two different browsers (tabs of the same browser share cookies, so you don't get the
+        full effect) to get a feel for user experience with multiple simultaneous users.
     </div>
-
 
 
     <div class="overlay-title">
@@ -73,15 +61,11 @@
     </div>
 
     <div class="overlay-text">
-        The backend is written in Scala using Play framework and Akka. It runs on a single AWS "micro" instance
-        (1 virtual CPU and 1GB of RAM), inside a Docker container managed by the EC2 Container Service (ECS).
-    </div>
-
-    <div class="overlay-text">
+        The backend is written in Scala using Play framework and Akka. It runs inside a Docker container managed by the
+        EC2 Container Service (ECS) on a single AWS "micro" instance (1 CPU core and 1GB of RAM).
         The front-end is HTML with CSS and jQuery. It uses Ajax to request problems to be solved and
-        Websockets to broadcast newly available solutions, user login events, and system status from the backend.
+        Websockets to receive newly available solutions, user login notifications, and system status from the backend.
     </div>
-
 
 
     <div class="overlay-title">
@@ -95,25 +79,21 @@
     </div>
 
 
-
     <div class="overlay-title">
-        WHY IS IT SO SLOW?
+        WHY DOES IT TAKE SO LONG TO SOLVE SOME PROBLEMS?
     </div>
 
     <div class="overlay-text">
         Project Euler is hard :) Many of my Project Euler solutions are very memory- and CPU-intensive, especially for
-        the higher-numbered problems. Several of the problems can individually overwhelm the backend.
-    </div>
-
-    <div class="overlay-text">
-        The backend can become unresponsive as it's solving some of the more resource-intensive problems.
-        It eventually recovers -- either via finally solving the pending problems or by running out of memory,
-        crashing, and being auto-restarted by ECS.
+        the higher-numbered problems. The backend can become unresponsive as it's solving some of the more demanding
+        problems. Eventually it will either finally solve the pending problems or run out of memory,
+        crash, and be auto-restarted by ECS. The front-end attempts to restore websocket connectivity after
+        the backend goes down.
     </div>
 
     <div class="overlay-text">
         I may explore shifting the solution logic to AWS Lambda which should solve the responsiveness issue.
-        Of course, beefing up the hardware would solve it as well.
+        Of course, beefing up the hardware past a single "micro" AWS instance would solve it as well.
     </div>
 
 </div>
