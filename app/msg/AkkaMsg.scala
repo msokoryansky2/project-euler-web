@@ -18,3 +18,6 @@ case class MsgBroadcastStatus(status: SystemStatus) extends MsgBroadcast
 sealed trait MsgIp2Geo
 case class MsgResolveIp(uuid: String, ip: String) extends MsgIp2Geo
 case class MsgIpResolution(userInfo: UserInfo) extends MsgIp2Geo
+
+sealed trait MsgUserInfo
+case class MsgUserInfoUpdate(userInfo: UserInfo) extends MsgUserInfo

@@ -16,7 +16,7 @@ import ExecutionContext.Implicits.global
 case class UserInfo private (uuid: String = "",
                              ip: String = "",
                              resolved: String = "0",
-                             name: String = "",
+                             name: String = "Guy Incognito",
                              city: String = "",
                              country: String = "",
                              lat: String = "",
@@ -34,12 +34,12 @@ case class UserInfo private (uuid: String = "",
         "lat" -> lat,
         "long" -> long)
   def desc: String =
-    (if (!name.isEmpty) name else "User") +
+    (if (!name.isEmpty) name else "Guy Incognito") +
       (if (!city.isEmpty && !country.isEmpty) s" in $city, $country"
         else if (!country.isEmpty) s" in $country"
         else if (!city.isEmpty) s" in $city"
         else if (!ip.isEmpty) s" at $ip"
-        else " Guy Incognito")
+        else "")
 
   def isResolved: Boolean = resolved.toInt > 0
 
@@ -73,8 +73,7 @@ object UserInfo {
           }
           .mapTo[MsgIpResolution]
           .map(_.userInfo), 5.second)}
-
-
+  
   /**
     * Attempt to recover UserInfo from session but only if it's resolved. None otherwise.
     * It is up to the caller to recover from Failure.
@@ -87,7 +86,7 @@ object UserInfo {
       Some(new UserInfo(uuid,
                         getIp(uuid, config, request), // always use currently known IP address
                         request.session.get("resolved").getOrElse("0"),
-                        request.session.get("name").getOrElse(""),
+                        request.session.get("name").getOrElse("User"),
                         request.session.get("city").getOrElse(""),
                         request.session.get("country").getOrElse(""),
                         request.session.get("lat").getOrElse(""),

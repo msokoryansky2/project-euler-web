@@ -32,6 +32,7 @@ class HomeController @Inject()(cc: ControllerComponents,
     if (userInfo.isResolved) clientBroadcaster ! MsgIpResolution(userInfo)
     Future {
       EulerProblemService.availableProblems
-    } map (problemList => Ok(views.html.main(views.html.right(problemList))(googleApiScriptUrl)).withSession(userInfo.toMap.toSeq: _*))
+    } map (problemList => Ok(views.html.main(userInfo, views.html.right(problemList))(googleApiScriptUrl))
+      .withSession(userInfo.toMap.toSeq: _*))
   }
 }

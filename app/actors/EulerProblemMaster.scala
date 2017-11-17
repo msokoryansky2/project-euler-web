@@ -36,6 +36,9 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
   }
 
   def receive: Receive = {
+    case MsgUserInfoUpdate(userInfo) =>
+      solutions = solutions.map(s => if (s._2.by.uuid == userInfo.uuid) s._1 -> s._2.withBy(userInfo) else s._1 -> s._2)
+
     case MsgAllSolutions() =>
       logger.info(s"Master $self received request for all available solutions")
       // Return set of all known solutions

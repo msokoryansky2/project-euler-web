@@ -3,7 +3,7 @@ $(document).ready(function(e) {
         var id = $(this).attr('data-id');
         problemClear(id);
         $("button#problem_" + id).removeClass("unsolved solved unsolved").addClass("in-progress");
-        $.getJSON("project_euler/" + id, processProblemResponse).fail(function() { problemError(id, "HTTP Error :(") });
+        $.getJSON("project_euler/" + encodeURIComponent(id), processProblemResponse).fail(function() { problemError(id, "HTTP Error :(") });
     })
 })
 

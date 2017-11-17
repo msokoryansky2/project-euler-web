@@ -42,7 +42,6 @@ div.gauge-title {
     margin-top: 20px;
     margin-bottom: 0px;
     font-family: 'Open Sans', sans-serif;
-    color: black;
     text-align: center;
     font-weight: 300;
     font-size: 14px;
@@ -54,10 +53,9 @@ div.map-title {
     margin-top: 20px;
     margin-bottom: 20px;
     font-family: 'Open Sans', sans-serif;
-    color: black;
     text-align: center;
     font-weight: 300;
-    font-size: 11px;
+    font-size: 13px;
     color: black;
 }
 
@@ -77,6 +75,28 @@ div#map {
     width: 100%;
     height: 180px;
     background-color: grey;
+}
+
+div.userinfo {
+    width: 100%;
+    margin-top: 10px;
+    font-family: 'Open Sans', sans-serif;
+    text-align: left;
+    font-weight: 300;
+    font-size: 13px;
+    color: black;
+}
+
+input#username {
+    font-family: 'Open Sans', sans-serif;
+    text-align: center;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    border-bottom: 1px solid grey;
+    font-weight: 300;
+    font-size: 15px;
+    color: black;
 }
 
 div.messages {
