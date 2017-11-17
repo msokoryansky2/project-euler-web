@@ -5,7 +5,7 @@ import javax.inject.{Inject, Named}
 import akka.actor.{Actor, ActorRef, Props}
 import akka.routing.{ActorRefRoutee, RoundRobinRoutingLogic, Router}
 import models.UserInfo
-import msg.{MsgIpResolution, MsgResolveIp}
+import msg.{MsgIpResolution, MsgResolveIp, MsgUserInfoUpdate}
 import play.api.Configuration
 
 class UserInfoMaster @Inject() (configuration: Configuration,
@@ -31,6 +31,10 @@ class UserInfoMaster @Inject() (configuration: Configuration,
   }
 
   def receive: Receive = {
+    case MsgUserInfoUpdate(userInfo) =>
+      sessions = sessions.map(s => if (s._1 == userInfo.uuid) s._1 -> userInfo else s._1 -> s._2)
+      ip2geo = ip2geo.map(s => if (s._1 == userInfo.uuid) s._1 -> userInfo else s._1 -> s._2)
+
     case MsgResolveIp(uuid, ip) =>
       logger.info(s"Master IP-to-geo $self received request for UUID $uuid at IP $ip")
       // If we already know this uuid with this IP, return its UserInfo.

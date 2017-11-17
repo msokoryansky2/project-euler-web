@@ -1,3 +1,5 @@
+@(userInfo: UserInfo)
+
 <div id="system-status">
     <div id="what-is-this"><a href="#">What Is All This?</a>&#128533;</div>
     <div class="leftpad"></div>
@@ -20,6 +22,10 @@
         </table>
     </div>
     <div id="map" class="map"></div>
+    <div class="userinfo">
+        What is your name?
+        <input type="text" id="username" size="15" maxlength="15" value="@userInfo.name" />
+    </div>
     <div class="leftpad"></div>
     <div id="error" class="error"></div>
     <div class="leftpad"></div>

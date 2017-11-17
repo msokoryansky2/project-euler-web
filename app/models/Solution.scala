@@ -28,6 +28,8 @@ class Solution private  (val problemNumber: Integer,
   def asMine(myUuid: String): Solution =
     if (isMine(myUuid)) new Solution(problemNumber, answer, startedAt, finishedAt, by, true) else this
 
+  def withBy(userInfo: UserInfo): Solution = new Solution(problemNumber, answer, startedAt, finishedAt, userInfo, mine)
+
   def toJson: JsObject =
     Json.obj("type" -> "solution",
               "problemNumber" -> problemNumber.toString,
