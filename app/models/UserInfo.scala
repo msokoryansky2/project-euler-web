@@ -86,7 +86,7 @@ object UserInfo {
       Some(new UserInfo(uuid,
                         getIp(uuid, config, request), // always use currently known IP address
                         request.session.get("resolved").getOrElse("0"),
-                        request.session.get("name").getOrElse("User"),
+                        request.session.get("name").getOrElse("Guy Incognito"),
                         request.session.get("city").getOrElse(""),
                         request.session.get("country").getOrElse(""),
                         request.session.get("lat").getOrElse(""),
