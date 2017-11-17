@@ -7,12 +7,12 @@ var pingHistory = [];
 $(document).ready(function(e) {
     $('.responsiveness-gauge').kumaGauge({
         value: 100,
-        radius: 80,
+        radius: 60,
         gaugeWidth: 10,
         showNeedle: false,
         fill: '0-#A9A9A9:0-#008CBA:100',
         paddingY: 15,
-        paddingX: 100,
+        paddingX: 15,
         valueLabel: {
             display: false,
         },

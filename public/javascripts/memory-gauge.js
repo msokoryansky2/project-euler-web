@@ -3,11 +3,11 @@
 $(document).ready(function(e) {
     $('.memory-gauge').kumaGauge({
         value: 0,
-        radius: 80,
+        radius: 60,
         gaugeWidth: 10,
         showNeedle: false,
         paddingY: 15,
-        paddingX: 100,
+        paddingX: 15,
         valueLabel: {
             display: false,
         },
