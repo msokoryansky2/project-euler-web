@@ -25,34 +25,27 @@
 
 
     <div class="overlay-title">
-        WHAT DO THE GAUGES MEAN?
+        WHAT'S WITH THE GAUGES AND THE MAP?
     </div>
 
     <div class="overlay-text">
-        The two gauges on the left represent the state of the server. They are updated via a Websocket connection.
-        The top gauge shows the server's Java Virtual Machine (JVM) memory utilization. It can reach 100% for
-        more demanding problems. The bottom gauge shows server's responsiveness. It should be near or at 100%
+        The two gauges represent the state of the server.
+        The left gauge shows the server's Java Virtual Machine (JVM) memory utilization. It can reach 100% for
+        more demanding problems. The right gauge shows server's responsiveness. It should be near or at 100%
         until the server becomes overloaded.
     </div>
 
     <div class="overlay-text">
-        Try opening this page in different browser windows and quickly clicking several problem buttons.
-        You'll see gauges in both browsers move in sync as they receive the same stream of data from the server.
-    </div>
-
-
-    <div class="overlay-title">
-        WHY IS THERE A MAP?
-    </div>
-
-    <div class="overlay-text">
-        The web app uses Websockets to let the users know what other users are doing. Whenever a new user
+        The map lets you see what the other users of this app are up to. Whenever a new user
         opens the web app or solves a problem, that event is instantly broadcast to all other users.
     </div>
 
     <div class="overlay-text">
-        Try opening the app in two different browsers (tabs of the same browser share cookies, so you don't get the
-        full effect) to get a feel for user experience with multiple simultaneous users.
+        Both the gauges and the map are updated in real-time from the server via a Websocket connection.
+        Try opening this page in different browser windows side by side (different browsers work better for this demo
+        than different tabs of the same browser since tabs share cookies). Now quickly click several problem buttons.
+        You'll see gauges in both browsers move in sync as they receive the same stream of data from the server.
+        And as the problems you clicked are solved, you'll see solutions broadcast to both the browser windows.
     </div>
 
 

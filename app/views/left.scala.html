@@ -3,28 +3,26 @@
 <div id="system-status">
     <div id="what-is-this"><a href="#">What Is All This?</a>&#128533;</div>
     <div class="leftpad"></div>
-    <div class="gauge-title">Backend JVM Memory Utilization</div>
-    <div class="js-gauge memory-gauge gauge"></div>
-    <div class="leftpad"></div>
-    <div class="gauge-title">Backend Responsiveness</div>
-    <div class="js-gauge responsiveness-gauge gauge"></div>
-    <div class="leftpad"></div>
-    <div class="map-title">
-        <table width="100%">
-            <tr>
-                <td width="50%"><img src="http://maps.google.com/mapfiles/ms/icons/blue-dot.png"/></td>
-                <td width="50%"><img src="http://maps.google.com/mapfiles/ms/icons/green-dot.png"/></td>
-            </tr>
-            <tr>
-                <td>User Login Event</td>
-                <td>Problem Solution Event</td>
-            </tr>
-        </table>
+    <div class="gauges">
+        <div style="float: left; width=50%">
+            <div class="gauge-title">Server Memory Usage</div>
+            <div class="js-gauge memory-gauge gauge"></div>
+        </div>
+        <div style="float: right; width=50%">
+            <div class="gauge-title">Server Responsiveness</div>
+            <div class="js-gauge responsiveness-gauge gauge"></div>
+        </div>
     </div>
+    <div class="leftpad"></div>
     <div id="map" class="map"></div>
+    <div class="leftpad"></div>
     <div class="userinfo">
-        What is your name?
-        <input type="text" id="username" size="15" maxlength="15" value="@userInfo.name" />
+        <div style="float: left; width=50%">
+            What is your name?
+        </div>
+        <div style="float: right; width=50%">
+            <input type="text" id="username" size="15" maxlength="15" value="@userInfo.name" />
+        </div>
     </div>
     <div class="leftpad"></div>
     <div id="error" class="error"></div>
