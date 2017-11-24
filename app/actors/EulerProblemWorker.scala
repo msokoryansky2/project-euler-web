@@ -19,6 +19,7 @@ class EulerProblemWorker @Inject() (configuration: Configuration) extends Actor 
 
   // List of problems to be solved on AWS Lambda as opposed to locally
   val awsLambdaProblems: Seq[String] = configuration.getOptional[Seq[String]]("project_euler.aws_lambda").getOrElse(Seq[String]())
+  def isViaLambda(problemNumber: Int): Boolean = awsLambdaProblems.contains(problemNumber.toString)
 
   // AWS credentials to be used in Lambda invokation
   val awsCredentialsAccess: String = configuration.getOptional[String]("aws_access_key_id").getOrElse("")
@@ -30,16 +31,17 @@ class EulerProblemWorker @Inject() (configuration: Configuration) extends Actor 
   def receive: Receive = {
     case MsgSolveWorker(problemNumber) =>
       logger.info(s"Worker $self received request for problem # $problemNumber")
-      sender ! MsgSolution(problemNumber, answer(problemNumber))
+      sender ! MsgSolution(problemNumber, answer(problemNumber), isViaLambda(problemNumber))
   }
 
   /**
     * Obtain a String answer to specified Project Euler problem, whether by solving on AWS Lambda or a local solution
     */
   def answer(problemNumber: Int): String = {
-    if (awsLambdaProblems.contains(problemNumber.toString))
+    if (isViaLambda(problemNumber))
       AwsLambdaEulerProblemService.answer(problemNumber, awsCredentialsAccess, awsCredentialsSecret)
     else
       EulerProblemService.answer(problemNumber)
   }
+
 }

@@ -10,9 +10,10 @@ class Solution private  (val problemNumber: Integer,
                          val startedAt: Long,
                          val finishedAt: Long,
                          val by: UserInfo,
-                         val mine: Boolean) {
+                         val mine: Boolean,
+                         val viaLambda: Boolean) {
   def complete(freshAnswer: String): Solution =
-    new Solution(problemNumber, freshAnswer, startedAt, System.currentTimeMillis() / 1000, by, false)
+    new Solution(problemNumber, freshAnswer, startedAt, System.currentTimeMillis() / 1000, by, false, false)
 
   def isSolved: Boolean =
     !answer.isEmpty && Try(answer.toLong).isSuccess && finishedAt > 0
@@ -26,9 +27,11 @@ class Solution private  (val problemNumber: Integer,
   // (either as HTTP response or websocket) they may be transformed by the sender (that knows which session/uuid
   // they "belong" to) to mark as "mine" those solutions that have the same uuid as the client.
   def asMine(myUuid: String): Solution =
-    if (isMine(myUuid)) new Solution(problemNumber, answer, startedAt, finishedAt, by, true) else this
+    if (isMine(myUuid)) new Solution(problemNumber, answer, startedAt, finishedAt, by, true, viaLambda) else this
 
-  def withBy(userInfo: UserInfo): Solution = new Solution(problemNumber, answer, startedAt, finishedAt, userInfo, mine)
+  def withBy(userInfo: UserInfo): Solution = new Solution(problemNumber, answer, startedAt, finishedAt, userInfo, mine, viaLambda)
+
+  def withViaLambda(vl: Boolean): Solution = new Solution(problemNumber, answer, startedAt, finishedAt, by, mine, vl)
 
   def toJson: JsObject =
     Json.obj("type" -> "solution",
@@ -36,6 +39,7 @@ class Solution private  (val problemNumber: Integer,
               "answer" -> answer,
               "by" -> by.toJson,
               "isMine" -> (if (mine) "1" else "0"),
+              "viaLambda" -> (if (viaLambda) "1" else "0"),
               "duration" -> (finishedAt - startedAt)
     )
 
@@ -47,7 +51,7 @@ object Solution {
   val ERROR_TIMEOUT = "Timed out :("
   val ERROR_OTHER = "Error :("
   def start(problemNumber: Integer, by: UserInfo): Solution =
-    new Solution(problemNumber, IN_PROGRESS, System.currentTimeMillis() / 1000, 0, by, false)
+    new Solution(problemNumber, IN_PROGRESS, System.currentTimeMillis() / 1000, 0, by, false, false)
   def error(problemNumber: Integer, by: UserInfo, error: String): Solution =
-    new Solution(problemNumber, error,  System.currentTimeMillis() / 1000, 0, by, false)
+    new Solution(problemNumber, error,  System.currentTimeMillis() / 1000, 0, by, false, false)
 }

@@ -73,12 +73,12 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
         workerRouter.route(MsgSolveWorker(problemNumber), self)
       }
 
-    case MsgSolution(problemNumber, answer) =>
+    case MsgSolution(problemNumber, answer, viaLambda) =>
       logger.info(s"Master $self received answer *** $answer *** for # $problemNumber")
       // We ignore any solutions that we are not aware of -- should never really happen
       if (solutions.isDefinedAt(problemNumber)) {
         // We always cache solutions -- the decision whether to use the cache is in MsgSolve logic
-        solutions(problemNumber) = solutions(problemNumber).complete(answer)
+        solutions(problemNumber) = solutions(problemNumber).complete(answer).withViaLambda(viaLambda)
         // Broadcast solution to all clients
         clientBroadcaster ! MsgBroadcastSolution(solutions(problemNumber))
       }

@@ -56,11 +56,12 @@ function problemError(id, responseText) {
 
 function problemSuccess(id, solution) {
     var id = solution.problemNumber;
-    $("span#answer_" + id).text(solution.answer);
+    $("span#answer_" + id).text(solution.answer + solution.problemNumber + (solution.viaLambda > 0 ? " (λ)" : ""));
     $("span#duration_" + id).text("" + solution.duration + " sec");
     $("span#by_" + id).text(solution.isMine > 0 ? "" : solution.by.desc);
     $("button#problem_" + id).removeClass("in-progress unsolved error").addClass("solved");
 
     // Create a map event for aolutions (mine and others')
-    /* if (solution.isMine <= 0) */ mapEvent("solution", solution.by, solution.by.desc + " solved # " + solution.problemNumber);
+    /* if (solution.isMine <= 0) */ mapEvent("solution", solution.by,
+        solution.by.desc + " solved # " + solution.problemNumber + (solution.viaLambda > 0 ? " on AWS Lambda" : ""));
 }
