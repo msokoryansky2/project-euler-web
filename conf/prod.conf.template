@@ -7,3 +7,7 @@ google.api.key=TBD
 project_euler.mock_ip = 0
 
 project_euler.aws_lambda = [43,51,69,72,74,75]
+
+# AWS auth into
+aws_access_key_id = YOUR_ACCESS_KEY_ID
+aws_secret_access_key = YOUR_SECRET_ACCESS_KEY

@@ -26,3 +26,6 @@ libraryDependencies += "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.3" % 
 libraryDependencies += "org.awaitility" % "awaitility" % "3.0.0" % Test
 
 libraryDependencies += "com.typesafe.akka" % "akka-actor_2.12" % "2.5.4"
+
+// https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-lambda
+libraryDependencies += "com.amazonaws" % "aws-java-sdk-lambda" % "1.11.235"

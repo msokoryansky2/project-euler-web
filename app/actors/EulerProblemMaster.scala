@@ -28,7 +28,7 @@ class EulerProblemMaster @Inject() (configuration: Configuration,
 
     logger.info(s"Creating router with $numWorkers Euler problem workers")
     val routees = Vector.fill(numWorkers) {
-      val r = context.actorOf(Props[EulerProblemWorker])
+      val r = context.actorOf(Props (new EulerProblemWorker(configuration)))
       context watch r
       ActorRefRoutee(r)
     }
