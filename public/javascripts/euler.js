@@ -30,7 +30,9 @@ function processSolution(solution) {
     if (isAnsweredNumerically(solution.problemNumber)) return;
 
     if (!!solution.answer) {
-        if (!Number.isNaN(solution.answer)) {
+        if (Number(parseFloat(solution.answer)) != solution.answer) {
+            problemError(solution.problemNumber, solution.answer);
+        } else if (!Number.isNaN(solution.answer)) {
             problemSuccess(solution.problemNumber, solution);
         } else {
             problemError(solution.problemNumber, solution.answer);
