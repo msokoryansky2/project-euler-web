@@ -5,14 +5,14 @@ import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.lambda.AWSLambdaClientBuilder
 import com.amazonaws.services.lambda.model.InvokeRequest
-
+import play.api.libs.json.{JsDefined, JsLookupResult, JsUndefined, Json}
 
 object AwsLambdaEulerProblemService {
   def answer(num: Int, awsCredentialsAccess: String, awsCredentialsSecret: String): String = {
     val logger = play.api.Logger(getClass)
 
     val invokeRequest = new InvokeRequest()
-      .withFunctionName("projectEulerSolution")
+      .withFunctionName("projectEulerSolutionJson")
       .withPayload(num.toString)
 
     val awsCreds = new BasicAWSCredentials(awsCredentialsAccess, awsCredentialsSecret)
@@ -24,25 +24,16 @@ object AwsLambdaEulerProblemService {
     try {
       val invokeResult = awsLambda.invoke(invokeRequest)
       if (invokeResult.getStatusCode < 200 || invokeResult.getStatusCode >= 300)
-        "AWS Lambda Status " + invokeResult.getStatusCode + " :("
+        "AWS λ Status " + invokeResult.getStatusCode + " :("
       else {
-        // This is ugly but good enough for demo purposes. Payload in case of a successful execution
-        // is an entire HTTP response with a bunch of headers as well as the answer we want.
-        // Every line is terminated with \r\n and last such line is our desired answer
-
-        val rawResponse = invokeResult.getPayload.asCharBuffer.toString
-
-        logger.info(s"AWS Lambda raw response for problem $num is: \n" + rawResponse)
-
-        val answer = rawResponse.split("\r\n").filter(!_.isEmpty).last
-
-        logger.info(s"AWS Lambda answer for problem $num is: $answer")
-
-        answer
-
+        val jsonString  = new String(invokeResult.getPayload.array, "UTF-8")
+        Json.parse(jsonString) \ "answer" match {
+          case JsDefined(v) => v.toString.replace("\"", "").replace("'", "")
+          case undefined: JsUndefined => "AWS λ Json Error :("
+        }
       }
     } catch {
-      case e: Exception => "AWS Lambda Error :("
+      case e: Exception => "AWS λ Error :("
     }
   }
 }
