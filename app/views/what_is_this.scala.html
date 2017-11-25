@@ -80,9 +80,10 @@
     <div class="overlay-text">
         Project Euler is hard :) Many of my Project Euler solutions are very memory- and CPU-intensive, especially for
         the higher-numbered problems. AWS Lambda is used to solve the most demanding problems, but even it may fail
-        to complete solutions within specified memory and duration limits. Because most problems are executed right on
-        the server (a single "micro" instance), it can become unresponsive when overloaded. Eventually it will either
-        finally solve the pending problems or run out of memory, crash, and be auto-restarted by ECS.
+        to complete solutions within specified memory and duration limits. The server solves most problems locally and
+        can become unresponsive when overloaded. Eventually it will either finally solve the pending problems or run out
+        of memory, crash, and be auto-restarted by ECS. The front-end re-establishes Webssocket connection after the
+        server restarts.
     </div>
 
 </div>
