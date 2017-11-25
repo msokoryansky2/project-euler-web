@@ -1,5 +1,6 @@
 package services
 
+import com.amazonaws.ClientConfiguration
 import com.amazonaws.auth.AWSStaticCredentialsProvider
 import com.amazonaws.auth.BasicAWSCredentials
 import com.amazonaws.regions.Regions
@@ -19,7 +20,8 @@ object AwsLambdaEulerProblemService {
 
     val awsLambda = AWSLambdaClientBuilder.standard.withRegion(Regions.US_EAST_1)
       .withCredentials(new AWSStaticCredentialsProvider(awsCreds))
-      .build
+        .withClientConfiguration(new ClientConfiguration().withMaxConsecutiveRetriesBeforeThrottling(1))
+          .build
 
     try {
       val invokeResult = awsLambda.invoke(invokeRequest)
