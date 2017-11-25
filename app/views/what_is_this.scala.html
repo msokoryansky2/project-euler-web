@@ -9,8 +9,8 @@
 
     <div class="overlay-text">
         <a href="https://projecteuler.net/" target="_blank">Project Euler</a> is hundreds of increasingly difficult
-        mathematical problems intended to be solved with computer programs. I used Scala and AWS to turn my
-        Project Euler solutions into a reactive, multi-user web app.
+        mathematical problems intended to be solved with computer programs. I used Scala, AWS, and Websockets to turn my
+        Project Euler solutions into an impractical but fun, reactive, multi-user web app.
     </div>
 
 
@@ -21,7 +21,8 @@
     <div class="overlay-text">
         Each grey button represents one Project Euler problem. Push it to solve the problem on the server
         (or on AWS Lambda). The button turns orange while the solution is in progress. Once solved, the button turns
-        green and the answer is displayed. Below the button is a link to the problem statement on Project Euler website.
+        green and the answer is displayed below the button. Also below each button you'll find a link to the problem
+        on the official Project Euler website.
     </div>
 
 
@@ -30,23 +31,26 @@
     </div>
 
     <div class="overlay-text">
-        The two gauges represent the state of the server.
-        The left gauge shows the server's Java Virtual Machine (JVM) memory utilization. It can reach 100% for
-        more demanding problems. The right gauge shows server's responsiveness. It should be near or at 100%
-        until the server becomes overloaded.
+        The two gauges represent the state of the server. The left gauge shows the server's Java Virtual Machine
+        (JVM) memory utilization. It can reach 100% for more demanding problems. The right gauge shows server's
+        responsiveness. It should be at or near until the server becomes overloaded with problems.
     </div>
 
     <div class="overlay-text">
-        The map lets you see what the other users of this app are up to. Whenever a new user
-        opens the web app or solves a problem, that event is instantly broadcast to all other users.
+        The map lets you see what the other users of this app are up to. Whenever a user
+        opens this web app or solves a problem, that event is instantly broadcast to all other users.
     </div>
 
     <div class="overlay-text">
-        Both the gauges and the map are updated in real-time from the server via a Websocket connection.
-        Try opening this page in different browser windows side by side (different browsers work better for this demo
-        than different tabs of the same browser since tabs share cookies). Now quickly click several problem buttons.
+        Both the gauges and the map are updated in real-time via a reactive Websocket connection
+        that serves as a real-time "push" notification service from the backend to all users.
+    </div>
+
+    <div class="overlay-text">
+        Try opening this page in two different browsers side by side (different tabs or windows of the same browser
+        will work too, though you won't get quite the same experience). Now quickly click a bunch of problem buttons.
         You'll see gauges in both browsers move in sync as they receive the same stream of data from the server.
-        And as the problems you clicked are solved, you'll see solutions broadcast to both the browser windows.
+        And as the problems you clicked are solved, you'll see solutions broadcast to both the browsers.
     </div>
 
 
@@ -57,7 +61,7 @@
     <div class="overlay-text">
         The backend is written in Scala using Play framework and Akka. It runs inside a Docker container managed by the
         EC2 Container Service (ECS) on a single AWS "micro" instance (1 CPU core and 1GB of RAM). AWS Lambda is used
-        to solve more computationally demanding problems -- their answers will have <b>(λ)</b> after them.
+        to solve more computationally demanding problems -- those answers will have a "<b>(λ)</b>" after them.
         The front-end is HTML with CSS and jQuery. It uses Ajax to request problems to be solved and
         Websockets to receive newly available solutions, user login notifications, and system status from the backend.
     </div>
@@ -68,9 +72,10 @@
     </div>
 
     <div class="overlay-text">
-        The repos for my Project Euler solutions and for this web app are on GitHub:
-        <a href="https://github.com/msokoryansky2/ProjectEuler" target="_blank">here</a> and
-        <a href="https://github.com/msokoryansky2/project-euler-web" target="_blank">here</a> respectively.
+        Here are GitHub links for
+        <a href="https://github.com/msokoryansky2/ProjectEuler" target="pe">my standalone Project Euler solutions</a>,
+        <a href="https://github.com/msokoryansky2/project-euler-web" target="web">this web app</a>, and
+        <a href="https://github.com/msokoryansky2/project-euler-aws-lambda" target="lambda">the AWS Lambda component</a>.
     </div>
 
 
@@ -80,11 +85,11 @@
 
     <div class="overlay-text">
         Project Euler is hard :) Many of my Project Euler solutions are very memory- and CPU-intensive, especially for
-        the higher-numbered problems. AWS Lambda is used to solve the most demanding problems, but even it may fail
-        to complete solutions within specified memory and duration limits. The server solves most problems locally and
-        can become unresponsive when overloaded. Eventually it will either finally solve the pending problems or run out
-        of memory, crash, and be auto-restarted by ECS. The front-end re-establishes Webssocket connection after the
-        server restarts.
+        the higher-numbered problems. AWS Lambda is used to solve the most demanding problems, but even Lambda's
+        generous max of 1.5GB of memory is sometimes not enough. Vast majority of problems are solved locally on
+        the AWS "micro" instance server, which can become unresponsive when overloaded. Eventually it will either finally
+        solve the pending problems or run out of memory, crash, and be auto-restarted by ECS. The front-end
+        re-establishes the Websocket connection after such server restarts.
     </div>
 
 </div>
