@@ -24,16 +24,16 @@ object AwsLambdaEulerProblemService {
     try {
       val invokeResult = awsLambda.invoke(invokeRequest)
       if (invokeResult.getStatusCode < 200 || invokeResult.getStatusCode >= 300)
-        "AWS λ Status " + invokeResult.getStatusCode + " :("
+        "AWS λ Error Status " + invokeResult.getStatusCode
       else {
         val jsonString  = new String(invokeResult.getPayload.array, "UTF-8")
         Json.parse(jsonString) \ "answer" match {
           case JsDefined(v) => v.toString.replace("\"", "").replace("'", "")
-          case undefined: JsUndefined => "AWS λ Json Error :("
+          case undefined: JsUndefined => "AWS λ Json Error"
         }
       }
     } catch {
-      case e: Exception => "AWS λ Error :("
+      case e: Exception => "AWS λ Error"
     }
   }
 }

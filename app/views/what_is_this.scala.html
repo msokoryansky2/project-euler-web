@@ -18,9 +18,9 @@
     </div>
 
     <div class="overlay-text">
-        Each grey button represents one Project Euler problem. Push it to solve the problem on the server.
-        The button turns orange while the solution is in progress. Once solved, the button turns green and the answer is
-        displayed. Below the button is a link to the problem statement on Project Euler website.
+        Each grey button represents one Project Euler problem. Push it to solve the problem on the server
+        (or on AWS Lambda). The button turns orange while the solution is in progress. Once solved, the button turns
+        green and the answer is displayed. Below the button is a link to the problem statement on Project Euler website.
     </div>
 
 
@@ -55,7 +55,8 @@
 
     <div class="overlay-text">
         The backend is written in Scala using Play framework and Akka. It runs inside a Docker container managed by the
-        EC2 Container Service (ECS) on a single AWS "micro" instance (1 CPU core and 1GB of RAM).
+        EC2 Container Service (ECS) on a single AWS "micro" instance (1 CPU core and 1GB of RAM). AWS Lambda is used
+        to solve more computationally demanding problems -- those answers have "(λ)" after them.
         The front-end is HTML with CSS and jQuery. It uses Ajax to request problems to be solved and
         Websockets to receive newly available solutions, user login notifications, and system status from the backend.
     </div>
@@ -78,15 +79,9 @@
 
     <div class="overlay-text">
         Project Euler is hard :) Many of my Project Euler solutions are very memory- and CPU-intensive, especially for
-        the higher-numbered problems. The backend can become unresponsive as it's solving some of the more demanding
-        problems. Eventually it will either finally solve the pending problems or run out of memory,
-        crash, and be auto-restarted by ECS. The front-end attempts to restore websocket connectivity after
-        the backend goes down.
-    </div>
-
-    <div class="overlay-text">
-        I may explore shifting the solution logic to AWS Lambda which should solve the responsiveness issue.
-        Of course, beefing up the hardware past a single "micro" AWS instance would solve it as well.
+        the higher-numbered problems. AWS Lambda is used to solve the most demanding problems. The backend can become
+        unresponsive if it's overloaded. Eventually it will either finally solve the pending problems or run out of memory,
+        crash, and be auto-restarted by ECS.
     </div>
 
 </div>
