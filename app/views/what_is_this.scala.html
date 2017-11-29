@@ -33,7 +33,7 @@
     <div class="overlay-text">
         The two gauges represent the state of the server. The left gauge shows the server's Java Virtual Machine
         (JVM) memory utilization. It can reach 100% for more demanding problems. The right gauge shows server's
-        responsiveness. It should be at or near until the server becomes overloaded with problems.
+        responsiveness. It should be at or near 100% until the server becomes overloaded with problems.
     </div>
 
     <div class="overlay-text">
@@ -86,7 +86,7 @@
     <div class="overlay-text">
         Project Euler is hard :) Many of my Project Euler solutions are very memory- and CPU-intensive, especially for
         the higher-numbered problems. AWS Lambda is used to solve the most demanding problems, but even Lambda's
-        generous max of 1.5GB of memory is sometimes not enough. Vast majority of problems are solved locally on
+        generous max of 1.5GB of memory is sometimes not enough. The vast majority of problems are solved locally on
         the AWS "micro" instance server, which can become unresponsive when overloaded. Eventually it will either finally
         solve the pending problems or run out of memory, crash, and be auto-restarted by ECS. The front-end
         re-establishes the Websocket connection after such server restarts.
