@@ -1,12 +1,9 @@
-FROM openjdk:8u141-slim
-COPY target/universal/ /usr/
-WORKDIR /usr/
-RUN unzip project-euler-web-1.0-SNAPSHOT
-RUN chmod +x /usr/project-euler-web-1.0-SNAPSHOT/bin
-EXPOSE 9000
-CMD ["/usr/project-euler-web-1.0-SNAPSHOT/bin/project-euler-web", "-J-XX:+UnlockExperimentalVMOptions", "-J-XX:+UseCGroupMemoryLimitForHeap", "-Dconfig.resource=prod.conf"]
-
-# #######################################################
+#########################################################
+# Create dist build:
+# ------------------
+# sbt dist
+#
+#
 # Create Docker image:
 # --------------------
 # build -t project-euler-web .
@@ -16,3 +13,12 @@ CMD ["/usr/project-euler-web-1.0-SNAPSHOT/bin/project-euler-web", "-J-XX:+Unlock
 # -----------------
 # run -p 9000:9000 project-euler-web
 # #######################################################
+
+FROM openjdk:8u141-slim
+COPY target/universal/ /usr/
+WORKDIR /usr/
+RUN unzip project-euler-web-1.0-SNAPSHOT
+RUN chmod +x /usr/project-euler-web-1.0-SNAPSHOT/bin
+EXPOSE 9000
+CMD ["/usr/project-euler-web-1.0-SNAPSHOT/bin/project-euler-web", "-J-XX:+UnlockExperimentalVMOptions", "-J-XX:+UseCGroupMemoryLimitForHeap", "-Dconfig.resource=prod.conf"]
+
